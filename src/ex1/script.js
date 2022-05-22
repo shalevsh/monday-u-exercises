@@ -177,7 +177,6 @@ function CreateNewListItemElementByTaskObject(taskObject, withSort) {
   VanishEmptyTaskFloatMassage();
   li.appendChild(textElement); // append text element to list item element
   document.getElementById("myUL").appendChild(li);
-  // alert("Task Added Successfully");
   if (taskObject.isAnimated) {
     AnimateListAdd(li);
     updateTask(taskObject.id, taskObject.type, taskObject.name, taskObject.datetime, false)
