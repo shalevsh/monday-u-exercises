@@ -15,18 +15,19 @@ class Orchestra{
     addItem(taskList){
     this.addTaskWatcher();
     const filterTaskList=taskList.filter((element) => element.isDisplay === false)
-    filterTaskList.forEach(element => {
+     filterTaskList.forEach(element => {
       let taskName;
       if(element.isPokemon === false){
          taskName = element.item
         element.isDisplay=true;
       }else{
         taskName = element.item.name; 
+        element.isDisplay=true;
       }
-      this.CreateNewListItemElement(taskName);
-    });
+       this.CreateNewListItemElement(taskName);
+     });
     }
-
+    
     addTaskWatcher() {
         setInterval(() => {
             let deadLineReachedTask = this.TaskList.filter(x => x.type == TYPE_DEADLINE).filter(x => x.datetime < new Date());
@@ -116,7 +117,7 @@ class Orchestra{
       }));
     }
     else if (sortBy == SORT_DEADLINE) {
-      sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type == TYPE_DEADLINE).sort((a, b) => { return b.datetime.getTime() - a.datetime.getTime(); }));
+      sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type == TYPE_DEADLINE).sort((a, b) => { return a.datetime.getTime() - b.datetime.getTime(); }));
       sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type != TYPE_DEADLINE && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
     }
     else if (sortBy == SORT_FINISHED) {
@@ -201,6 +202,7 @@ class Orchestra{
 }
 
  clearList() {
+   this.TaskList=[];
   this.VanishvisibleButtons();
   this.DisplayEmptyTaskFloatMassage();
   document.getElementById("myUL").innerHTML = "";
@@ -292,8 +294,7 @@ class Orchestra{
   const input = document.createElement("input");
   input.setAttribute('type', "datetime-local")
   input.className = "calendarIcon";
-  input.onchange = function () {
-    console.log(new Date(input.value));
+  input.onchange =  ()=> {
     let task = this.getTask(li.getAttribute("taskId"));
     this.updateTask(task.id, TYPE_DEADLINE, task.name, new Date(input.value), task.isAnimated)
     input.nextElementSibling.innerHTML = new Date(input.value);
@@ -302,7 +303,6 @@ class Orchestra{
     input.nextElementSibling.nextElementSibling.style.display = "block";
   }
   input.onblur = function () {
-    console.log("blur")
     setTimeout(() => {
       input.nextElementSibling.nextElementSibling.style.display = "none";
     }, 500);

@@ -8,10 +8,10 @@
 
 <body>
   <div id="myDIV" class="header">
-    <h2 class="Heading">NBA Legands To Do List</h2>
+    <h2 class="Heading">Pokemon To Do List</h2>
 
     <div class="container" style="margin-bottom: 10px; visibility: hidden">
-      <label for="sortDropdown"> Draglist type sorts</label>
+      <label id="drag-list" for="sortDropdown"> Draglist type sorts</label>
       <select id="sortDropdown">
         <option value="1">ABC</option>
         <option value="2">Deadline</option>
@@ -20,7 +20,7 @@
       </select>
     </div>
     <div>
-      <input type="text" id="inputTask" placeholder="Title..." />
+      <input type="text" id="inputTask" placeholder="Title..." style="margin-left: 70px;" />
       <button class="btn" id="addBtn" onclick="CreateNewListItemElement()">
         +
       </button>

@@ -12,14 +12,6 @@ import Orchestra from "./orchestra.js";
     const {isPokemon,arrOfPokemonsID} = this.isPokemon(item); 
      if(isPokemon){
       const ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
-      if (ArrWithoutDuplicates.length == 0) {
-        this.taskList.push({
-          isPokemon: false,
-          item: "pokemon alredy existed",
-          isDisplay: false
-        });
-        throw "pokemon alredy existed";
-      } else {
         try {
           const pokemons = await this.pokemonClinet.fetchPokemon(ArrWithoutDuplicates);
           this.taskList = this.taskList.concat(
@@ -28,15 +20,23 @@ import Orchestra from "./orchestra.js";
               this.taskList.push(obj)
             })
           );
-        } catch (e) {
-          this.itemsArr.push({
-            isPokemon: false,
-            item: "pokemon not found",
-            isDisplay: false
+        } catch (exception) {
+          let res =""; 
+          ArrWithoutDuplicates.forEach( elem =>{
+            res += elem + " ";
+          
           });
-          throw "pokemon not found";
+          const obj={
+            isPokemon: false,
+            item: `pokemon's:${res} wern't found`,
+            isDisplay: false
+          }
+          this.taskList.push(obj);
+          this.Orchestra.addItem(this.taskList);
+
         }
-      }
+        
+      
     } else {
       this.taskList.push({isPokemon: false, item: item, isDisplay: false});
     }
@@ -44,7 +44,7 @@ import Orchestra from "./orchestra.js";
       this.taskList=res;
       this.Orchestra.addItem(this.taskList);
     }
-
+   
   sortList(){
     this.Orchestra.sortList();
   }
