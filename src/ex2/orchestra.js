@@ -12,9 +12,19 @@ class Orchestra{
         this.TaskList =[];
     }
 
-    addItem(taskString){
+    addItem(taskList){
     this.addTaskWatcher();
-    this.CreateNewListItemElement(taskString);
+    const filterTaskList=taskList.filter((element) => element.isDisplay === false)
+    filterTaskList.forEach(element => {
+      let taskName;
+      if(element.isPokemon === false){
+         taskName = element.item
+        element.isDisplay=true;
+      }else{
+        taskName = element.item.name; 
+      }
+      this.CreateNewListItemElement(taskName);
+    });
     }
 
     addTaskWatcher() {
@@ -191,7 +201,6 @@ class Orchestra{
 }
 
  clearList() {
-  this.TaskList = [];
   this.VanishvisibleButtons();
   this.DisplayEmptyTaskFloatMassage();
   document.getElementById("myUL").innerHTML = "";
