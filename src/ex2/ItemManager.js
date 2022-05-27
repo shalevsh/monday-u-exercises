@@ -9,6 +9,8 @@ import Orchestra from "./orchestra.js";
   }
 
   async addItem(item) {
+    this.updateDeletedTaskInArray();
+    console.log(this.taskList);
     const {isPokemon,arrOfPokemonsID} = this.isPokemon(item); 
      if(isPokemon){
       const ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
@@ -32,7 +34,7 @@ import Orchestra from "./orchestra.js";
             isDisplay: false
           }
           this.taskList.push(obj);
-          this.Orchestra.addItem(this.taskList);
+          this.Orchestra.renderItem(this.taskList);
 
         }
         
@@ -40,11 +42,15 @@ import Orchestra from "./orchestra.js";
     } else {
       this.taskList.push({isPokemon: false, item: item, isDisplay: false});
     }
-      const res = this.taskList.filter(elem => { return elem !== undefined});
-      this.taskList=res;
+      this.taskList = this.taskList.filter(elem => { return elem !== undefined});
       this.Orchestra.addItem(this.taskList);
     }
-   
+
+    updateDeletedTaskInArray(){
+      // I init all removed tasks to undefined in Orchestra
+      this.taskList = this.taskList.filter(elem => { return elem !== undefined});
+    }
+    
   sortList(){
     this.Orchestra.sortList();
   }

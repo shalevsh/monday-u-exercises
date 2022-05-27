@@ -12,7 +12,7 @@ class Orchestra{
         this.TaskList =[];
     }
 
-    addItem(taskList){
+    renderItem(taskList){
     this.addTaskWatcher();
     const filterTaskList=taskList.filter((element) => element.isDisplay === false)
      filterTaskList.forEach(element => {
@@ -24,7 +24,7 @@ class Orchestra{
         taskName = element.item.name; 
         element.isDisplay=true;
       }
-       this.CreateNewListItemElement(taskName);
+       this.CreateNewListItemElement(taskName,taskList);
      });
     }
     
@@ -50,13 +50,13 @@ class Orchestra{
         this.TaskList.push({ id: id, type: type, name: name, datetime: date, createDateTime: new Date(), isAnimated: true });
         return id;
       }
-     CreateNewListItemElement(taskString) {
+     CreateNewListItemElement(taskString,taskList) {
        // const inputValue = document.getElementById("myInput").value;   //extract user task input string name
         if (taskString === '') {
           alert("You must write something!");
         } else {
-          let insertedId = this.addTask(TYPE_NOTCOMPLETE,taskString, null);
-          this.bindTaskList(false)
+          this.addTask(TYPE_NOTCOMPLETE,taskString, null);
+          this.bindTaskList(false,taskList)
         }
       }
 
@@ -64,7 +64,7 @@ class Orchestra{
         if (this.TaskList.length == 0) {
           return 1;
         }
-        let latestId = this.TaskList.map(x => x.id).sort((p, c) => c - p);
+        const latestId = this.TaskList.map(x => x.id).sort((p, c) => c - p);
         return latestId[0] + 1;
       
       }
@@ -87,13 +87,13 @@ class Orchestra{
   this.TaskList[indexFound] = { id: id, type: type, name: name, datetime: date, createDateTime: createDateTime, isAnimated: isAnimated };
 }
 
- bindTaskList(withSort) {
+ bindTaskList(withSort,taskList) {
   let sortedList = this.getSortedTaskList(withSort);
   if (sortedList.length > 0) {
     document.getElementById("myUL").innerHTML = "";
     for (let index = 0; index < sortedList.length; index++) {
       const LiObject = sortedList[index];
-      this.CreateNewListItemElementByTaskObject(LiObject, withSort)
+      this.CreateNewListItemElementByTaskObject(LiObject,taskList)
     }
   }
 
@@ -136,7 +136,7 @@ class Orchestra{
   return sortTaskList;
 }
 
-  CreateNewListItemElementByTaskObject(taskObject, withSort) {
+  CreateNewListItemElementByTaskObject(taskObject,taskList) {
 
   // Create a new list item when clicking on the "Add" button
   const li = document.createElement("li");   //create new list item html element  
@@ -158,7 +158,7 @@ class Orchestra{
   li.addEventListener("click", ({ target }) => {
   this.CheckedTask(target, false); // mark task for complete status
   });
-  this.CreateRemoveItemFromList(li);
+  this.CreateRemoveItemFromList(li,taskList,taskObject.id);
   this.addCalendarIcon(li, taskObject.datetime);
   if (taskObject.type == TYPE_FINISHED) {
     this.CheckedTask(li, true)
@@ -182,7 +182,6 @@ class Orchestra{
   if (!target.classList.contains('checked')) {
     const id = target.getAttribute('taskId')
     let taskObject = this.getTask(id);
-    //taskObject === "undefined"? this.updateTask(taskObject.id, TYPE_FINISHED, taskObject.name, taskObject.datetime, false) : 
     this.updateTask(taskObject.id, TYPE_FINISHED, taskObject.name, taskObject.datetime, false)
     if (!withSort) {
       this.rotateImage();
@@ -256,12 +255,13 @@ class Orchestra{
 }
 
 
- removeItem(li) {
+ removeItem(li,taskList,id) {
+   taskList[id-1] = undefined;
   li.remove();
 }
 
  
-  CreateRemoveItemFromList(li) {
+  CreateRemoveItemFromList(li,taskList,id) {
   const span = document.createElement("SPAN");
   const txt = document.createTextNode("\u00D7");
   span.className = "close";
@@ -280,7 +280,7 @@ class Orchestra{
   const id =li.getAttribute('taskId');
   this.TaskList = this.TaskList.filter(x => x.id != id);
 
-  setTimeout(this.removeItem, 1000, li)
+  setTimeout(this.removeItem, 1000, li,taskList,id)
   const ul = document.getElementById("myUL");   //extract user task input string name
     if (ul.childElementCount === 1) {
       this.VanishvisibleButtons();
@@ -356,33 +356,34 @@ class Orchestra{
   document.getElementsByClassName("container")[0].style.visibility = "hidden"; //vanish dropdown
 }
  rotateImage() {
-  let randomNo = this.randomIntFromInterval(1, 75);
-  let imagePath = `images/${randomNo}.jpg`
-  document.getElementById('imageNBA').setAttribute('src', imagePath);
-  document.getElementsByClassName('NbaImage')[0].style.visibility = "visible"
-  const spinning = [
-    { transform: 'rotate(0deg) scale(0)' },
-    { transform: 'rotate(0) scale(1)' }
+  // let randomNo = this.randomIntFromInterval(1, 75);
+  // let imagePath = `images/${randomNo}.jpg`
+  // document.getElementById('imageNBA').setAttribute('src', imagePath);
+  // document.getElementsByClassName('NbaImage')[0].style.visibility = "visible"
+  // const spinning = [
+  //   { transform: 'rotate(0deg) scale(0)' },
+  //   { transform: 'rotate(0) scale(1)' }
 
-  ];
-  const timing = {
-    duration: 2000,
-    iterations: 1,
-  }
-  document.getElementById('imageNBA').animate(spinning, timing);
-  setTimeout(() => {
-    const spinning = [
-      { transform: 'rotate(0) scale(1)' },
-      { transform: 'rotate(0deg) scale(0)' }
-    ];
-    const timing = {
-      duration: 2000,
-      iterations: 1,
-    }
-    document.getElementById('imageNBA').animate(spinning, timing);
-    setTimeout(() => { document.getElementsByClassName('NbaImage')[0].style.visibility = "hidden" }, 500)
-  }, 2000);
+  // ];
+  // const timing = {
+  //   duration: 2000,
+  //   iterations: 1,
+  // }
+  // document.getElementById('imageNBA').animate(spinning, timing);
+  // setTimeout(() => {
+  //   const spinning = [
+  //     { transform: 'rotate(0) scale(1)' },
+  //     { transform: 'rotate(0deg) scale(0)' }
+  //   ];
+  //   const timing = {
+  //     duration: 2000,
+  //     iterations: 1,
+  //   }
+  //   document.getElementById('imageNBA').animate(spinning, timing);
+  //   setTimeout(() => { document.getElementsByClassName('NbaImage')[0].style.visibility = "hidden" }, 500)
+  // }, 2000);
 }
+
 
 }export default Orchestra;
 
