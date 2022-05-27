@@ -61,7 +61,7 @@ class ItemManager {
 
     // const ArrWithoutDuplicates = this.taskList.filter(task=>{task.item!== pokemonObj})
 
-    
+
   }
   updateDeletedTaskInArray() {
     // I init all removed tasks to undefined in Orchestra
