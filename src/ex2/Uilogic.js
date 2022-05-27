@@ -7,9 +7,9 @@ const SORT_DEADLINE = 2;
 const SORT_NOTCOMPLETE = 3;
 const SORT_FINISHED = 4;
 
-class Orchestra {
+class UiLogic {
   constructor() {
-    this.TaskList = [];
+    this.taskList = [];
   }
 
   renderItem(taskList) {
@@ -31,7 +31,7 @@ class Orchestra {
 
   addTaskWatcher() {
     setInterval(() => {
-      let deadLineReachedTask = this.TaskList.filter(x => x.type == TYPE_DEADLINE).filter(x => x.datetime < new Date());
+      let deadLineReachedTask = this.taskList.filter(x => x.type == TYPE_DEADLINE).filter(x => x.datetime < new Date());
       if (deadLineReachedTask && deadLineReachedTask.length > 0) {
         let ids = deadLineReachedTask.map(x => x.id);
         for (let index = 0; index < ids.length; index++) {
@@ -51,7 +51,7 @@ class Orchestra {
     if (isPokemon === true) {
       name = "Catch " + name;
     }
-    this.TaskList.push({ id: id, type: type, name: name, datetime: date, createDateTime: new Date(), isAnimated: true });
+    this.taskList.push({ id: id, type: type, name: name, datetime: date, createDateTime: new Date(), isAnimated: true });
     return id;
   }
   CreateNewListItemElement(taskString, taskList, isPokemon) {
@@ -64,22 +64,22 @@ class Orchestra {
   }
 
   getId() {
-    if (this.TaskList.length == 0) {
+    if (this.taskList.length == 0) {
       return 1;
     }
-    const latestId = this.TaskList.map(x => x.id).sort((p, c) => c - p);
+    const latestId = this.taskList.map(x => x.id).sort((p, c) => c - p);
     return latestId[0] + 1;
 
   }
   getTask(id) {
-    return this.TaskList.filter(x => x.id == id)[0]
+    return this.taskList.filter(x => x.id == id)[0]
   }
 
   updateTask(id, type, name, date, isAnimated) {
     let indexFound = 0;
     let createDateTime = new Date();
-    for (let index = 0; index < this.TaskList.length; index++) {
-      let element = this.TaskList[index];
+    for (let index = 0; index < this.taskList.length; index++) {
+      let element = this.taskList[index];
       if (element.id == id) {
         createDateTime = element.createDateTime;
         indexFound = index;
@@ -87,13 +87,13 @@ class Orchestra {
       }
     }
 
-    this.TaskList[indexFound] = { id: id, type: type, name: name, datetime: date, createDateTime: createDateTime, isAnimated: isAnimated };
+    this.taskList[indexFound] = { id: id, type: type, name: name, datetime: date, createDateTime: createDateTime, isAnimated: isAnimated };
   }
 
   bindTaskList(withSort, taskList) {
     let sortedList = this.getSortedTaskList(withSort);
     if (sortedList.length > 0) {
-      document.getElementById("myUL").innerHTML = "";
+        document.getElementById("my-ul").innerHTML = "";
       for (let index = 0; index < sortedList.length; index++) {
         const LiObject = sortedList[index];
         this.CreateNewListItemElementByTaskObject(LiObject, taskList, index)
@@ -104,14 +104,14 @@ class Orchestra {
 
   getSortedTaskList(withSort) {
     let sortTaskList = []
-    let sortBy = document.getElementById('sortDropdown').value
-    if (this.TaskList.some(x => x.type == TYPE_DEADLINE_FINISHED)) {
-      sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type == TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.datetime.getTime() - a.datetime.getTime(); }));
+    let sortBy = document.getElementById('sort-dropdown').value
+    if (this.taskList.some(x => x.type == TYPE_DEADLINE_FINISHED)) {
+      sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type == TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.datetime.getTime() - a.datetime.getTime(); }));
     }
     if (withSort) {
       if (sortBy == SORT_ALPHABATICALLY) {
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => {
-          var nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => {
+          let nameA = a.name.toLowerCase(), nameB = b.name.toLowerCase();
           if (nameA < nameB) //sort string ascending
             return -1;
           if (nameA > nameB)
@@ -120,21 +120,21 @@ class Orchestra {
         }));
       }
       else if (sortBy == SORT_DEADLINE) {
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type == TYPE_DEADLINE).sort((a, b) => { return a.datetime.getTime() - b.datetime.getTime(); }));
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type != TYPE_DEADLINE && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type == TYPE_DEADLINE).sort((a, b) => { return a.datetime.getTime() - b.datetime.getTime(); }));
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type != TYPE_DEADLINE && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
       }
       else if (sortBy == SORT_FINISHED) {
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type == TYPE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type != TYPE_FINISHED && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type == TYPE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type != TYPE_FINISHED && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
       }
 
       else if (sortBy == SORT_NOTCOMPLETE) {
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type == TYPE_NOTCOMPLETE).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
-        sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type != TYPE_NOTCOMPLETE && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type == TYPE_NOTCOMPLETE).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
+        sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type != TYPE_NOTCOMPLETE && x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
       }
     }
     else {
-      sortTaskList = sortTaskList.concat(this.TaskList.filter(x => x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
+      sortTaskList = sortTaskList.concat(this.taskList.filter(x => x.type != TYPE_DEADLINE_FINISHED).sort((a, b) => { return b.createDateTime.getTime() - a.createDateTime.getTime(); }));
     }
     return sortTaskList;
   }
@@ -151,7 +151,7 @@ class Orchestra {
     this.DisplayDropdown(); //display dropdown
     this.VanishEmptyTaskFloatMassage();
     li.appendChild(textElement); // append text element to list item element
-    document.getElementById("myUL").appendChild(li);
+    document.getElementById("my-ul").appendChild(li);
     this.handleCountTask();
     if (taskObject.isAnimated) {
       this.AnimateListAdd(li);
@@ -208,23 +208,23 @@ class Orchestra {
   }
 
   clearList() {
-    this.TaskList = [];
+    this.taskList = [];
     this.VanishvisibleButtons();
     this.DisplayEmptyTaskFloatMassage();
-    document.getElementById("myUL").innerHTML = "";
+    document.getElementById("my-ul").innerHTML = "";
     this.handleCountTask();
   }
 
   VanishvisibleButtons() {
-    const sortButton = document.getElementById("sortBtn");
-    const clearButton = document.getElementById("clearBtn");
+    const sortButton = document.getElementById("sort-btn");
+    const clearButton = document.getElementById("clear-btn");
     sortButton.style.visibility = "hidden";
     clearButton.style.visibility = "hidden";
     this.VanishDropdown();
   }
   DisplayInvisibleButtons() {
-    const sortButton = document.getElementById("sortBtn");
-    const clearButton = document.getElementById("clearBtn");
+    const sortButton = document.getElementById("sort-btn");
+    const clearButton = document.getElementById("clear-btn");
     sortButton.style.visibility = "visible";
     clearButton.style.visibility = "visible";
   }
@@ -288,7 +288,7 @@ class Orchestra {
       }
       li.animate(spinning, timing);
       const id = li.getAttribute('taskId');
-      this.TaskList = this.TaskList.filter(x => x.id != id);
+      this.taskList = this.taskList.filter(x => x.id != id);
       setTimeout(() => {
        
         taskList[id - 1] = undefined;
@@ -296,9 +296,8 @@ class Orchestra {
         this.handleCountTask();
 
       }, 1000)
-      //setTimeout(this.removeItem, 1000, li, taskList, id)
 
-      const ul = document.getElementById("myUL");   //extract user task input string name
+      const ul = document.getElementById("my-ul");   //extract user task input string name
       if (ul.childElementCount === 1) {
         this.VanishvisibleButtons();
         this.DisplayEmptyTaskFloatMassage();
@@ -372,40 +371,10 @@ class Orchestra {
   VanishDropdown() {
     document.getElementsByClassName("container")[0].style.visibility = "hidden"; //vanish dropdown
   }
-  rotateImage() {
-    // let randomNo = this.randomIntFromInterval(1, 75);
-    // let imagePath = `images/${randomNo}.jpg`
-    // document.getElementById('imageNBA').setAttribute('src', imagePath);
-    // document.getElementsByClassName('NbaImage')[0].style.visibility = "visible"
-    // const spinning = [
-    //   { transform: 'rotate(0deg) scale(0)' },
-    //   { transform: 'rotate(0) scale(1)' }
-
-    // ];
-    // const timing = {
-    //   duration: 2000,
-    //   iterations: 1,
-    // }
-    // document.getElementById('imageNBA').animate(spinning, timing);
-    // setTimeout(() => {
-    //   const spinning = [
-    //     { transform: 'rotate(0) scale(1)' },
-    //     { transform: 'rotate(0deg) scale(0)' }
-    //   ];
-    //   const timing = {
-    //     duration: 2000,
-    //     iterations: 1,
-    //   }
-    //   document.getElementById('imageNBA').animate(spinning, timing);
-    //   setTimeout(() => { document.getElementsByClassName('NbaImage')[0].style.visibility = "hidden" }, 500)
-    // }, 2000);
-  }
+ 
+  
   addPokemonImage(pokemonObj) {
   const url = pokemonObj.sprites.front_default;
-    // const imagePath = document.createElement("img");
-    // imagePath.setAttribute("src", url);
-    // li.appendChild(div);
-    // li.appendChild(imagePath);
     document.getElementById('imageNBA').setAttribute('src', url);
     document.getElementsByClassName('NbaImage')[0].style.visibility = "visible"
     const spinning = [
@@ -446,7 +415,7 @@ class Orchestra {
     return pokemonObj;
   }
   handleCountTask() {
-    const numTasks = document.getElementById("myUL").childElementCount;
+    const numTasks = document.getElementById("my-ul").childElementCount;
     const count = document.getElementById("count");
     console.log(numTasks)
 
@@ -458,7 +427,7 @@ class Orchestra {
 
     }
   }
-} export default Orchestra;
+} export default UiLogic;
 
 
 

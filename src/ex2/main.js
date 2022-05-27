@@ -2,10 +2,10 @@ import  ItemManager  from "./ItemManager.js";
 class Main {
   constructor() {
    this.itemManager = new ItemManager();
-   this.addButton = document.getElementById("addBtn");
-   this.inputTaskName = document.getElementById("inputTask");
-   this.sortButton = document.getElementById("sortBtn");
-   this.clearAllButton = document.getElementById("clearBtn");
+   this.addButton = document.getElementById("add-btn");
+   this.inputTaskName = document.getElementById("input-task");
+   this.sortButton = document.getElementById("sort-btn");
+   this.clearAllButton = document.getElementById("clear-btn");
   }
 
   init() {

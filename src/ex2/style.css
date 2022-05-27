@@ -18,6 +18,10 @@ height: 379px;
   border-bottom: 5px solid red;
 
 }
+.container{
+  style:"margin-bottom: 10px";
+  visibility: "hidden";
+}
 .selectDate{
   position: absolute;
   width: 200px;

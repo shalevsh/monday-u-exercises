@@ -1,11 +1,11 @@
 import PokemonClinet from "./PokemonClient.js";
-import Orchestra from "./orchestra.js";
+import UiLogic from "./Uilogic.js";
 
 class ItemManager {
   constructor() {
     this.taskList = [];
     this.pokemonClinet = new PokemonClinet();
-    this.Orchestra = new Orchestra();
+    this.Orchestra = new UiLogic();
   }
 
   async addItem(item) {

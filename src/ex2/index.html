@@ -7,12 +7,12 @@
 </head>
 
 <body>
-  <div id="myDIV" class="header">
+  <div id="my-div" class="header">
     <h2 class="Heading">Pokemon To Do List</h2>
 
-    <div class="container" style="margin-bottom: 10px; visibility: hidden">
-      <label id="drag-list" for="sortDropdown"> Draglist type sorts</label>
-      <select id="sortDropdown">
+    <div class="container" >
+      <label id="drag-list" for="sort-dropdown"> Draglist type sorts</label>
+      <select id="sort-dropdown">
         <option value="1">ABC</option>
         <option value="2">Deadline</option>
         <option value="3">Not complete</option>
@@ -20,20 +20,20 @@
       </select>
     </div>
     <div>
-      <input type="text" id="inputTask" placeholder="Title..." style="margin-left: 70px;" />
-      <button class="btn" id="addBtn" onclick="CreateNewListItemElement()">
+      <input type="text" id="input-task" placeholder="Title..." style="margin-left: 70px;" />
+      <button class="btn" id="add-btn" onclick="CreateNewListItemElement()">
         +
       </button>
     </div>
 
     <br />
-    <ul id="myUL">
+    <ul id="my-ul">
     </ul>
 
     <div class="container" style="margin-bottom: 10px; visibility: hidden">
       <span id = "count"> </span>
-      <button class="vbtn" id="sortBtn">Sort</button>
-      <button class="vbtn" id="clearBtn">Clear All</button>
+      <button class="vbtn" id="sort-btn">Sort</button>
+      <button class="vbtn" id="clear-btn">Clear All</button>
     </div>
   </div>
   <div style="visibility: hidden" class="NbaImage">
