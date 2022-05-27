@@ -43,4 +43,4 @@ When you finish it should look like this:
 - [ ] In the solution file you'll see this piece of code: `pokemons.forEach(this.addPokemonItem);`
   - The `addPokemonItem` method adds the pokemon to the array of todos and renders the todos list again
   - Can you figure out why this line of code is inefficient? Can you improve it?
-- [ ] Have another cool idea? Go wild!
+- [x] Have another cool idea? Go wild!

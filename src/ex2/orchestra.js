@@ -24,7 +24,8 @@ class Orchestra{
         taskName = element.item.name; 
         element.isDisplay=true;
       }
-       this.CreateNewListItemElement(taskName,taskList);
+      const isPokemon = element.isPokemon
+       this.CreateNewListItemElement(taskName,taskList,isPokemon);
      });
     }
     
@@ -45,17 +46,19 @@ class Orchestra{
         }, 1000)
     }
 
-     addTask(type, name, date) {
+     addTask(type, name, date,isPokemon) {
         let id = this.getId();
+        if(isPokemon === true){
+          name ="Catch "+  name  ;
+          }   
         this.TaskList.push({ id: id, type: type, name: name, datetime: date, createDateTime: new Date(), isAnimated: true });
         return id;
       }
-     CreateNewListItemElement(taskString,taskList) {
-       // const inputValue = document.getElementById("myInput").value;   //extract user task input string name
+     CreateNewListItemElement(taskString,taskList,isPokemon) {
         if (taskString === '') {
           alert("You must write something!");
         } else {
-          this.addTask(TYPE_NOTCOMPLETE,taskString, null);
+          this.addTask(TYPE_NOTCOMPLETE,taskString, null,isPokemon);
           this.bindTaskList(false,taskList)
         }
       }

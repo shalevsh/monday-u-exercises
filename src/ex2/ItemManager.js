@@ -43,7 +43,7 @@ import Orchestra from "./orchestra.js";
       this.taskList.push({isPokemon: false, item: item, isDisplay: false});
     }
       this.taskList = this.taskList.filter(elem => { return elem !== undefined});
-      this.Orchestra.addItem(this.taskList);
+      this.Orchestra.renderItem(this.taskList);
     }
 
     updateDeletedTaskInArray(){
