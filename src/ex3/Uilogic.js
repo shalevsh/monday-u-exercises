@@ -93,14 +93,10 @@ class UiLogic {
   bindTaskList(withSort, taskList) {
     let sortedList = this.getSortedTaskList(withSort);
     if (sortedList.length > 0) {
-      document.getElementById("my-ul").innerHTML = "";
+        document.getElementById("my-ul").innerHTML = "";
       for (let index = 0; index < sortedList.length; index++) {
         const LiObject = sortedList[index];
-        if (taskList) {
-          this.CreateNewListItemElementByTaskObject(LiObject, taskList, index)
-        } else {
-          this.CreateNewListItemElementByTaskObject(LiObject, sortedList, index)
-        }
+        this.CreateNewListItemElementByTaskObject(LiObject, taskList, index)
       }
     }
 
@@ -168,7 +164,7 @@ class UiLogic {
     this.CreateRemoveItemFromList(li, taskList, taskObject.id);
     this.addCalendarIcon(li, taskObject.datetime);
     const pokemonObj = this.getPokemonObjectByName(taskList, taskObject.name);
-    if (pokemonObj !== null && index === 0) {
+    if (pokemonObj!==null &&index === 0) {
       this.addPokemonImage(pokemonObj);
     }
     if (taskObject.type == TYPE_FINISHED) {
@@ -294,7 +290,7 @@ class UiLogic {
       const id = li.getAttribute('taskId');
       this.taskList = this.taskList.filter(x => x.id != id);
       setTimeout(() => {
-
+       
         taskList[id - 1] = undefined;
         li.remove();
         this.handleCountTask();
@@ -375,10 +371,10 @@ class UiLogic {
   VanishDropdown() {
     document.getElementsByClassName("container")[0].style.visibility = "hidden"; //vanish dropdown
   }
-
-
+ 
+  
   addPokemonImage(pokemonObj) {
-    const url = pokemonObj.sprites.front_default;
+  const url = pokemonObj.sprites.front_default;
     document.getElementById('imageNBA').setAttribute('src', url);
     document.getElementsByClassName('NbaImage')[0].style.visibility = "visible"
     const spinning = [
@@ -403,7 +399,7 @@ class UiLogic {
       document.getElementById('imageNBA').animate(spinning, timing);
       setTimeout(() => { document.getElementsByClassName('NbaImage')[0].style.visibility = "hidden" }, 500)
     }, 2000);
-  }
+   }
 
   getPokemonObjectByName(taskList, taskObjectName) {
     let pokemonObj = null;
