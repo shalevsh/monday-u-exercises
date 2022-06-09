@@ -1,12 +1,11 @@
 
-import fetch from "node-fetch";
-import chunck from "node-fetch";
 import { Command } from "commander";
-import  ItemManager  from "./ItemManager.js";
+import ItemManager from "./ItemManager.js";
 
 
 function getCommanderProgram() {
   const program = new Command();
+  const itemManger = new ItemManager();
 
   program
     .name("to-do")
@@ -14,30 +13,27 @@ function getCommanderProgram() {
     .version("1.0.0");
 
   program
-    .command("add-task")
+    .command("add")
     .description("Adding task to the list")
     .argument("<string>", "Task name")
     // .option("-s, --scale <string>", SCALE_ARG_DESCRIPTION, SCALES.CELSIUS)
     .action(async (taskName, options) => {
-        ItemManager.addItem(taskName);
-    });
-
-    program
-    .command("remove-task")
-    .description("removing task to the list")
-    .action(() => {
-      console.log(
-        `todo list-`
-      );
+      await itemManger.addItem(taskName);
     });
 
   program
-    .command("get-detailed-task-list")
+    .command("delete")
+    .description("removing task to the list")
+    .argument("<number>", "Task Index")
+    .action((taskIndex) => {
+      itemManger.DeleteTask(taskIndex);
+    });
+
+  program
+    .command("get")
     .description("print the task list into the Cli")
     .action(() => {
-      console.log(
-        `todo list-`
-      );
+      itemManger.getTaskList();
     });
 
 
@@ -47,6 +43,8 @@ function getCommanderProgram() {
 
   return program;
 }
+
+
 
 const program = getCommanderProgram();
 program.parse();

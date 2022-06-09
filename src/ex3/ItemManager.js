@@ -1,32 +1,33 @@
 import PokemonClinet from "./PokemonClient.js";
-import UiLogic from "./Uilogic.js";
-
-class ItemManager {
+import fs from "fs";
+import asciifyImage from 'asciify-image';
+import chalk from "chalk";
+export default class ItemManager {
   constructor() {
     this.taskList = [];
     this.pokemonClinet = new PokemonClinet();
-    this.Orchestra = new UiLogic();
+
   }
 
   async addItem(item) {
-    this.updateDeletedTaskInArray();
-    console.log(this.taskList);
+    this.loadTaskList();
     const pokemonObj = await this.pokemonClinet.checkByPokemonName(item);
     const { isPokemon, arrOfPokemonsID } = this.isPokemon(item);
 
-    if (isPokemon||pokemonObj) {
+    if (isPokemon || pokemonObj) {
       let ArrWithoutDuplicates;
       let pokemons;
       let isPokimonObjectExists;
-      
+
       try {
-        if(isPokemon){
+        if (isPokemon) {
           ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
-        }else{
-          isPokimonObjectExists = this.getItemsToAddFromObject(pokemonObj);
         }
+        // else{
+        //   isPokimonObjectExists = this.getItemsToAddFromObject(pokemonObj);
+        // }
         if (pokemonObj) {
-          pokemons = [pokemonObj ];
+          pokemons = [pokemonObj];
         } else {
           pokemons = await this.pokemonClinet.fetchPokemon(ArrWithoutDuplicates);
         }
@@ -42,41 +43,32 @@ class ItemManager {
           res += elem + " ";
 
         });
-        const obj = {
-          isPokemon: false,
-          item: `pokemon's:${res} wern't found`,
-          isDisplay: false
-        }
-        this.taskList.push(obj);
-        this.Orchestra.renderItem(this.taskList);
       }
     } else {
-      this.taskList.push({ isPokemon: false, item: item, isDisplay: false });
+      this.taskList.push({ isPokemon: false, item: item });
     }
     this.taskList = this.taskList.filter(elem => { return elem !== undefined });
-    this.Orchestra.renderItem(this.taskList);
+    this.saveFullTaskList();
   }
 
-  getItemsToAddFromObject(pokemonObj){
 
-    // const ArrWithoutDuplicates = this.taskList.filter(task=>{task.item!== pokemonObj})
-
-
-  }
-  updateDeletedTaskInArray() {
-    // I init all removed tasks to undefined in Orchestra
-    this.taskList = this.taskList.filter(elem => { return elem !== undefined });
-  }
-
-  sortList() {
-    this.Orchestra.sortList();
-  }
-  clearList() {
-    this.taskList = [];
-    this.Orchestra.clearList(this.taskList);
-
-  }
-  getPokemonNames(item) {
+  saveFullTaskList() {
+    fs.writeFile("./todoDB.json", JSON.stringify(this.taskList), err => {
+      if (err) console.log(chalk.red("Error writing file:", err));
+      else console.log(chalk.green("New todo added successfully"));
+    });
+    // jsonReader("./todoDB.json", (err, taskArray) => {
+    //   if (err) {
+    //     console.log("Error reading file:", err);
+    //     return;
+    //   }
+    //   // increase customer order count by 1
+    //   taskArray.push(taskName);
+    //   fs.writeFile("./todoDB.json", JSON.stringify(taskArray), err => {
+    //     if (err) console.log("Error writing file:", err);
+    //     else console.log("New todo added successfully");
+    //   });
+    // });
   }
 
 
@@ -104,7 +96,99 @@ class ItemManager {
     return !isNaN(val);
   }
 
+  loadTaskList() {
+    this.jsonReader("./todoDB.json", (err, taskArray) => {
+      this.taskList = [];
+      if (err) {
+
+        return [];
+      }
+      this.taskList = taskArray;
+    });
+  }
+
+  addTask(taskName) {
+    this.jsonReader("./todoDB.json", (err, taskArray) => {
+      if (err) {
+        console.log(chalk.red("Error reading file:", err));
+        return;
+      }
+      // increase customer order count by 1
+      taskArray.push(taskName);
+      fs.writeFile("./todoDB.json", JSON.stringify(taskArray), err => {
+        if (err) console.log(chalk.red("Error writing file:", err));
+        else console.log(chalk.green("New todo added successfully"));
+      });
+    });
+  }
+  getTaskList() {
+    this.jsonReader("./todoDB.json", (err, taskArray) => {
+      if (err) {
+        console.log(chalk.red("Error reading file:", err));
+        return;
+      }
+      if (taskArray.length == 0) {
+        console.log(chalk.redBright("No task found"));
+      }
+      else {
+        for (let index = 0; index < taskArray.length; index++) {
+          const element = taskArray[index];
+          if (element.isPokemon) {
+            console.log(chalk.green(`Catch ${element.item.name}`));
+            asciifyImage(element.item.sprites.front_default,{fit:"original"},(err,pokemonImage) =>{
+                console.log(pokemonImage);
+              }
+            );
+          }
+          else {
+            console.log(element.item);
+          }
+
+        }
+      }
+
+    });
+  }
+
+  DeleteTask(index) {
+    this.jsonReader("./todoDB.json", (err, taskArray) => {
+      if (err) {
+        console.log("Error reading file:", err);
+        return;
+      }
+
+      if (typeof taskArray[index] === 'undefined') {
+        console.log("Error in reading file")
+      }
+      else {
+        // does exist
+
+        taskArray.splice(index, 1);
+        fs.writeFile("./todoDB.json", JSON.stringify(taskArray), err => {
+          if (err) console.log("Error writing file:", err);
+          else console.log("Todo deleted successfully")
+        });
+      }
+    });
+  }
+  jsonReader(filePath, cb) {
+    fs.readFile(filePath, (err, fileData) => {
+      if (err) {
+        return cb && cb(err);
+      }
+      try {
+        const object = JSON.parse(fileData);
+        return cb && cb(null, object);
+      } catch (err) {
+        return cb && cb(err);
+      }
+    });
+  }
+
 }
-export default ItemManager;
 
 
+// module.exports = {
+//   ItemManager: ItemManager,
+
+// };

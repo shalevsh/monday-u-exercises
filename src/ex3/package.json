@@ -1,18 +1,19 @@
 {
-  "name": "ex3",
+  "name": "todo-cli",
   "version": "1.0.0",
-  "description": "",
+  "description": "todo cli",
   "main": "todo.js",
-  "dependencies": {
-    "chunk": "^0.0.3",
-    "commander": "^9.3.0",
-    "node-fetch": "^3.2.4"
-  },
-  "devDependencies": {},
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "asciify-image": "^0.1.8",
+    "chalk": "^5.0.1",
+    "commander": "^9.3.0",
+    "fs": "0.0.1-security",
+    "node-fetch": "^3.2.5"
+  }
 }
