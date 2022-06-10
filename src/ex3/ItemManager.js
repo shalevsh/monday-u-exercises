@@ -1,11 +1,11 @@
-import PokemonClinet from "./PokemonClient.js";
-import fs from "fs";
+import PokemonClient from "./PokemonClient.js";
+import {promises as fs} from "fs";
 import asciifyImage from 'asciify-image';
 import chalk from "chalk";
 export default class ItemManager {
   constructor() {
     this.taskList = [];
-    this.pokemonClinet = new PokemonClinet();
+    this.pokemonClinet = new PokemonClient();
 
   }
 
@@ -17,15 +17,10 @@ export default class ItemManager {
     if (isPokemon || pokemonObj) {
       let ArrWithoutDuplicates;
       let pokemons;
-      let isPokimonObjectExists;
-
       try {
         if (isPokemon) {
           ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
         }
-        // else{
-        //   isPokimonObjectExists = this.getItemsToAddFromObject(pokemonObj);
-        // }
         if (pokemonObj) {
           pokemons = [pokemonObj];
         } else {
@@ -47,36 +42,25 @@ export default class ItemManager {
     } else {
       this.taskList.push({ isPokemon: false, item: item });
     }
-    this.taskList = this.taskList.filter(elem => { return elem !== undefined });
-    this.saveFullTaskList();
+    await this.saveFullTaskList();
   }
 
 
-  saveFullTaskList() {
-    fs.writeFile("./todoDB.json", JSON.stringify(this.taskList), err => {
-      if (err) console.log(chalk.red("Error writing file:", err));
-      else console.log(chalk.green("New todo added successfully"));
-    });
-    // jsonReader("./todoDB.json", (err, taskArray) => {
-    //   if (err) {
-    //     console.log("Error reading file:", err);
-    //     return;
-    //   }
-    //   // increase customer order count by 1
-    //   taskArray.push(taskName);
-    //   fs.writeFile("./todoDB.json", JSON.stringify(taskArray), err => {
-    //     if (err) console.log("Error writing file:", err);
-    //     else console.log("New todo added successfully");
-    //   });
-    // });
+   async saveFullTaskList() {
+    try{
+     await fs.writeFile("./todoDB.json", JSON.stringify(this.taskList))
+     console.log(chalk.green("New todo added successfully"));
+    }catch(err){
+      console.log(chalk.red("Error writing file:", err));
+    }
   }
 
 
-  getItemsToAdd(arr) {
+  getItemsToAdd(arrOfTasks) {
     const pokemonsIdArr = this.taskList
-      .filter((obj) => obj.isPokemon)
-      .map((obj) => obj.item.id.toString());
-    const ArrWithoutDuplicates = arr.filter((id) => !pokemonsIdArr.includes(id));
+      .filter((task) => task.isPokemon)
+      .map((pokemon) => pokemon.item.id.toString());
+    const ArrWithoutDuplicates = arrOfTasks.filter((id) => !pokemonsIdArr.includes(id));
     return ArrWithoutDuplicates;
   }
 
@@ -96,43 +80,32 @@ export default class ItemManager {
     return !isNaN(val);
   }
 
-  loadTaskList() {
-    this.jsonReader("./todoDB.json", (err, taskArray) => {
-      this.taskList = [];
-      if (err) {
+  async loadTaskList() {
+    this.taskList = await this.jsonReader("./todoDB.json")
 
-        return [];
-      }
-      this.taskList = taskArray;
-    });
   }
 
-  addTask(taskName) {
-    this.jsonReader("./todoDB.json", (err, taskArray) => {
-      if (err) {
-        console.log(chalk.red("Error reading file:", err));
-        return;
-      }
+   async addTask(taskName) {
+   this.taskList = await  this.jsonReader("./todoDB.json")
       // increase customer order count by 1
       taskArray.push(taskName);
-      fs.writeFile("./todoDB.json", JSON.stringify(taskArray), err => {
-        if (err) console.log(chalk.red("Error writing file:", err));
-        else console.log(chalk.green("New todo added successfully"));
-      });
-    });
-  }
-  getTaskList() {
-    this.jsonReader("./todoDB.json", (err, taskArray) => {
-      if (err) {
-        console.log(chalk.red("Error reading file:", err));
-        return;
+      try{
+       await fs.writeFile("./todoDB.json", JSON.stringify(taskArray))
+       console.log(chalk.green("New todo added successfully"));
+       }catch(err){
+        console.log(chalk.red("Error writing file:", err));
+       }
       }
-      if (taskArray.length == 0) {
+  
+  async getTaskList() {
+    this.taskList = await this.jsonReader("./todoDB.json")
+     
+      if (this.taskList.length === 0) {
         console.log(chalk.redBright("No task found"));
       }
       else {
-        for (let index = 0; index < taskArray.length; index++) {
-          const element = taskArray[index];
+        for (let index = 0; index < this.taskList.length; index++) {
+          const element = this.taskList[index];
           if (element.isPokemon) {
             console.log(chalk.green(`Catch ${element.item.name}`));
             asciifyImage(element.item.sprites.front_default,{fit:"original"},(err,pokemonImage) =>{
@@ -146,49 +119,34 @@ export default class ItemManager {
 
         }
       }
-
-    });
   }
 
-  DeleteTask(index) {
-    this.jsonReader("./todoDB.json", (err, taskArray) => {
-      if (err) {
-        console.log("Error reading file:", err);
-        return;
-      }
-
-      if (typeof taskArray[index] === 'undefined') {
-        console.log("Error in reading file")
-      }
-      else {
+  async DeleteTask(index) {
+  this.taskList = await this.jsonReader("./todoDB.json")
         // does exist
+        this.taskList.splice(index, 1);
+        try{
+        await fs.writeFile("./todoDB.json", JSON.stringify(this.taskList));
+        console.log(chalk.green("Todo deleted successfully"));
+        }
+      catch(err){
+        console.log(chalk.red("Item doesn't exist"));      
+        }
+      }
+ 
+  async jsonReader(filePath) {
+    try{
+      let data =  await fs.readFile(filePath)
+      let tasks = JSON.parse(data);
+      return tasks;
+    }
+    catch(err)
+    {
+      await fs.writeFile(filePath,JSON.stringify(this.taskList))
+      return this.taskList
 
-        taskArray.splice(index, 1);
-        fs.writeFile("./todoDB.json", JSON.stringify(taskArray), err => {
-          if (err) console.log("Error writing file:", err);
-          else console.log("Todo deleted successfully")
-        });
-      }
-    });
-  }
-  jsonReader(filePath, cb) {
-    fs.readFile(filePath, (err, fileData) => {
-      if (err) {
-        return cb && cb(err);
-      }
-      try {
-        const object = JSON.parse(fileData);
-        return cb && cb(null, object);
-      } catch (err) {
-        return cb && cb(err);
-      }
-    });
-  }
-
+    }
+}
 }
 
 
-// module.exports = {
-//   ItemManager: ItemManager,
-
-// };

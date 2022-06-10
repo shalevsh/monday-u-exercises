@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import  {promises as fs } from "fs";
 export default class PokemonClinet {
   constructor() {
 
@@ -13,10 +14,13 @@ export default class PokemonClinet {
   }
 
   async checkByPokemonName(name) {
-    const response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`
-    );
-    const pokemonsArrList = await response.json()
+    let pokemonsArrList =await  this.readFromPokemonDataBaseFile();
+    if(pokemonsArrList===undefined){
+    const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`);
+    pokemonsArrList = await response.json();
+    this.savePokemonList(pokemonsArrList);
+    }
+    
     let res = null
     for (const obj of pokemonsArrList.results) {
       if (obj.name === name.toLowerCase()) {
@@ -26,6 +30,23 @@ export default class PokemonClinet {
       }
     }
     return res
+  }
+
+  async savePokemonList(pokemonsArrList) {
+    await fs.writeFile("./pokemonsDB.json", JSON.stringify(pokemonsArrList), err => {
+      if (err) console.log(chalk.red("Error writing file of pokemons Data Base:", err));
+    });
+  }
+
+
+  async readFromPokemonDataBaseFile(){
+    const filePath ="./pokemonsDB.json";
+    try {
+      const todoJsonFile = await fs.readFile("pokemonsDB.json");
+      return JSON.parse(todoJsonFile);
+    } catch (err) {
+      return undefined;
+    }
   }
 }
 
