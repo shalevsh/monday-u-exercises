@@ -20,7 +20,6 @@ export default class ItemManager {
       await fs.writeFile("todoDB.json",JSON.stringify(this.taskList))
 
     }
-    console.log('mew',item)
     const pokemonObj = await this.pokemonClinet.checkByPokemonName(item);
     const { isPokemon, arrOfPokemonsID } = this.isPokemon(item);
 
