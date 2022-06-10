@@ -2,7 +2,6 @@ import fetch from 'node-fetch';
 import  {promises as fs } from "fs";
 export default class PokemonClinet {
   constructor() {
-
   }
   fetchPokemon(arr) {
     const responses = [];
@@ -40,7 +39,6 @@ export default class PokemonClinet {
 
 
   async readFromPokemonDataBaseFile(){
-    const filePath ="./pokemonsDB.json";
     try {
       const todoJsonFile = await fs.readFile("pokemonsDB.json");
       return JSON.parse(todoJsonFile);

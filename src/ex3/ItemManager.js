@@ -10,7 +10,17 @@ export default class ItemManager {
   }
 
   async addItem(item) {
-    this.loadTaskList();
+    try{
+      let data =  await fs.readFile("todoDB.json")
+      this.taskList = JSON.parse(data);
+      
+    }
+    catch(err)
+    {
+      await fs.writeFile("todoDB.json",JSON.stringify(this.taskList))
+
+    }
+    console.log('mew',item)
     const pokemonObj = await this.pokemonClinet.checkByPokemonName(item);
     const { isPokemon, arrOfPokemonsID } = this.isPokemon(item);
 
@@ -123,11 +133,21 @@ export default class ItemManager {
 
   async DeleteTask(index) {
   this.taskList = await this.jsonReader("./todoDB.json")
-        // does exist
+  if(this.taskList.length === 0)
+  {
+    console.log(chalk.red('your list is empty'))
+    return;
+
+  }
+        if(!this.taskList.indexOf(index))
+        {
+          console.log(chalk.red(`item with index: ${index} doesn't exsit`))
+          return;
+        }
         this.taskList.splice(index, 1);
         try{
         await fs.writeFile("./todoDB.json", JSON.stringify(this.taskList));
-        console.log(chalk.green("Todo deleted successfully"));
+        console.log(chalk.red("Todo deleted successfully"));
         }
       catch(err){
         console.log(chalk.red("Item doesn't exist"));      

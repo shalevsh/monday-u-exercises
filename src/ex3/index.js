@@ -1,9 +1,63 @@
 import { Command } from "commander";
 import ItemManager from "./ItemManager.js";
+import inquirer from "inquirer";
+const itemManger = new ItemManager();
+
+inquirer
+  .prompt([
+    {
+      type:'list', 
+      name:'list',
+      message: 'pick from the options',
+      choices:['Add a new task','See your current tasks','Delete task']
+    }
+  ])
+  .then((answers) => {
+    if(answers.list == 'Add a new task')
+    {
+      inquirer.prompt([{
+        type:'input', 
+        name:'add',
+        message: 'add your new task'}
+       
+
+      ]).then((answers)=>{
+        itemManger.addItem(answers.add)
+      })
+      
+    }
+    else if(answers.list =='See your current tasks'){
+       itemManger.getTaskList();
+    }
+
+    else{
+      inquirer.prompt([{
+        type:'input', 
+        name:'delete',
+        message: 'please put your task id that you want to delete',
+        validate:(answer) =>{
+          if(isNaN(answer)){
+            return 'please enter a valid number'
+          }
+          return true;
+
+        }
+      }
+       
+
+      ]).then((answers)=>{
+        itemManger.DeleteTask(answers.delete)
+      })
+
+    }
+    
+  })
+
+  // I implement Inquirer and Commander both, to use commander activate lines 94-95 and note the above code.
 
 function getCommanderProgram() {
   const program = new Command();
-  const itemManger = new ItemManager();
+  
 
   program
     .name("to-do")
@@ -35,7 +89,9 @@ function getCommanderProgram() {
   return program;
 }
 
-const program = getCommanderProgram();
-program.parse();
+
+
+//  const program = getCommanderProgram();
+//  program.parse();
 
 
