@@ -1,27 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Listy</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
 
-  <body>
-    <div class="app-container">
-      <div class="list-container">
-        <h1 class="app-name">Todo App</h1>
-        <div class="list-controls">
-          <input
-            type="text"
-            id="list-item-input"
-            placeholder="Add your new todo"
-          />
-          <button type="button" id="list-item-submit">+</button>
-        </div>
-        <ul id="list"></ul>
-      </div>
+<head>
+  <title>TODO Pokemon</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div id="my-div" class="header">
+    <h2 class="Heading">Pokemon To Do List</h2>
+
+    <div class="container" >
+      <label id="drag-list" for="sort-dropdown"> Draglist type sorts</label>
+      <select id="sort-dropdown">
+        <option value="1">ABC</option>
+        <option value="2">Deadline</option>
+        <option value="3">Not complete</option>
+        <option value="4">Finished</option>
+      </select>
     </div>
-  </body>
+    <div>
+      <input type="text" id="input-task" placeholder="Title..." style="margin-left: 70px;" />
+      <button class="btn" id="add-btn" onclick="CreateNewListItemElement()">
+        +
+      </button>
+    </div>
 
-  <script src="./clients/item_client.js"></script>
-  <script src="main.js"></script>
+    <br />
+    <ul id="my-ul">
+    </ul>
+
+    <div class="container" style="margin-bottom: 10px; visibility: hidden">
+      <span id = "count"> </span>
+      <button class="vbtn" id="sort-btn">Sort</button>
+      <button class="vbtn" id="clear-btn">Clear All</button>
+    </div>
+  </div>
+  <div style="visibility: hidden" class="NbaImage">
+    <img id="imageNBA" src="bg.png" style="width: 684px" />
+  </div>
+  <div class="floating" id="floating_square">
+    <h2 style="text-align: center; line-height: 2; color: beige">
+      WAIT <br />FOR<br />
+      TASKS
+    </h2>
+  </div>
+</body>
+<script type="module" src="./main.js"></script>
+
 </html>
