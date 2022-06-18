@@ -13,8 +13,10 @@ class Main {
   async init() {
     const items = await item_client.fetchItems();
     console.log(items,"mewor42394392");
-    UiLogic.renderItem(items);
-    
+   await UiLogic.renderItem(items);
+    this.AddTaskByEnter();
+
+
 
 
     await this.ListenToAddItem();
@@ -26,11 +28,10 @@ class Main {
   }
  
   async ListenToAddItem(){
-      await this.AddTaskByEnter();
+      // await this.AddTaskByEnter();
       this.addButton.addEventListener("click", async() => {
     //  this.itemManager.addItem(this.inputTaskName.value)
       const items = await item_client.createItem(this.inputTaskName.value);
-      console.log([items],"mewo77")
       UiLogic.renderItem([items]);
       this.inputTaskName.value = "";
       //Clear the input when a new item is added
@@ -45,14 +46,12 @@ listenToClearAllTasks(){
   //  this.itemManager.clearList();
 })};
 
- async AddTaskByEnter() {
+  AddTaskByEnter() {
     this.inputTaskName.addEventListener("keypress", event => {
       if (event.key === "Enter") {
         event.preventDefault();
-        //const items = await item_client.createItem(this.inputTaskName.value);
-        console.log(items,"mewo3");
+        this.addButton.click();
         this.inputTaskName.value = "";
-
       }
     });
   }

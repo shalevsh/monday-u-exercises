@@ -37,6 +37,7 @@ class ItemManager {
           pokemons = await this.pokemonClinet.fetchPokemon(ArrWithoutDuplicates);
           pokemons.forEach((pokemon) => {
             this.newItems.push(pokemon);
+
           })
         }
         this.taskList = this.taskList.concat(
@@ -53,7 +54,7 @@ class ItemManager {
         });
       }
     } else {
-      this.taskList.push({ isPokemon: false, item: item });
+      this.taskList.push({ isPokemon: false, item: item ,isDisplay: false});
       await this.saveFullTaskList();
       return this.taskList[this.taskList.length-1];
     }

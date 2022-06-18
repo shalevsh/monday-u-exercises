@@ -13,6 +13,9 @@ export async function createItem(req, res, next) {
   export async function deleteItem(req, res, next) {
     try {
       const itemId = parseInt(req.params.id);
+     // itemId-=1;
+      console.log(itemId,"lantsman");
+
       await ItemManager.DeleteTask(itemId);
       res.status(200).json(itemId);
     } catch (err) {

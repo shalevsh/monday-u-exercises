@@ -1,3 +1,4 @@
+import item_client from "../clients/item_client.js"
 const TYPE_DEADLINE = 1
 const TYPE_NOTCOMPLETE = 2
 const TYPE_FINISHED = 3
@@ -12,10 +13,11 @@ class UiLogic {
     this.taskList = [];
   }
 
-  renderItem(taskList) {
-    this.addTaskWatcher();
-    const filterTaskList = taskList.filter((element) => element.isDisplay === false)
-    filterTaskList.forEach(element => {
+  async renderItem(taskList) {
+    await this.addTaskWatcher();
+    const filterTaskList = taskList.filter((element) => element.isDisplay === false);
+    console.log(filterTaskList)
+    filterTaskList.forEach(async (element) => {
       let taskName;
       if (element.isPokemon === false) {
         taskName = element.item
@@ -24,21 +26,22 @@ class UiLogic {
         taskName = element.item.name;
         element.isDisplay = true;
       }
-      const isPokemon = element.isPokemon
-      this.CreateNewListItemElement(taskName, taskList, isPokemon);
+      const isPokemon = element.isPokemon;
+     await this.CreateNewListItemElement(taskName, taskList, isPokemon);
     });
+    console.log(filterTaskList)
   }
 
-  addTaskWatcher() {
-    setInterval(() => {
-      let deadLineReachedTask = this.taskList.filter(x => x.type == TYPE_DEADLINE).filter(x => x.datetime < new Date());
+  async addTaskWatcher() {
+     setInterval(async() => {
+      let deadLineReachedTask = this.taskList.filter(x => x.type == TYPE_DEADLINE).filter((x) => x.datetime < new Date());
       if (deadLineReachedTask && deadLineReachedTask.length > 0) {
         let ids = deadLineReachedTask.map(x => x.id);
         for (let index = 0; index < ids.length; index++) {
           const liId = ids[index];
           let task = getTask(liId);
           this.updateTask(task.id, TYPE_DEADLINE_FINISHED, task.name, task.datetime, task.isAnimated);
-          this.bindTaskList(false);
+          await this.bindTaskList(false);
 
         }
       }
@@ -55,13 +58,12 @@ class UiLogic {
     this.taskList.push({ id: id, type: type, name: name, datetime: date, createDateTime: new Date(), isAnimated: true });
     return id;
   }
-  CreateNewListItemElement(taskString, taskList, isPokemon) {
-    console.log(taskList,"mewo4")
+ async CreateNewListItemElement(taskString, taskList, isPokemon) {
     if (taskString === '') {
       alert("You must write something!");
     } else {
       this.addTask(TYPE_NOTCOMPLETE, taskString, null, isPokemon);
-      this.bindTaskList(false, taskList)
+     await this.bindTaskList(false, taskList)
     }
   }
 
@@ -92,16 +94,16 @@ class UiLogic {
     this.taskList[indexFound] = { id: id, type: type, name: name, datetime: date, createDateTime: createDateTime, isAnimated: isAnimated };
   }
 
-  bindTaskList(withSort, taskList) {
+  async bindTaskList(withSort, taskList) {
     let sortedList = this.getSortedTaskList(withSort);
     if (sortedList.length > 0) {
       document.getElementById("my-ul").innerHTML = "";
       for (let index = 0; index < sortedList.length; index++) {
         const LiObject = sortedList[index];
         if (taskList) {
-          this.CreateNewListItemElementByTaskObject(LiObject, taskList, index)
+         await this.CreateNewListItemElementByTaskObject(LiObject, taskList, index)
         } else {
-          this.CreateNewListItemElementByTaskObject(LiObject, sortedList, index)
+         await this.CreateNewListItemElementByTaskObject(LiObject, sortedList, index)
         }
       }
     }
@@ -145,7 +147,7 @@ class UiLogic {
     return sortTaskList;
   }
 
-  CreateNewListItemElementByTaskObject(taskObject, taskList, index) {
+ async CreateNewListItemElementByTaskObject(taskObject, taskList, index) {
     // Create a new list item when clicking on the "Add" button
     const li = document.createElement("li");   //create new list item html element  
     const textElement = document.createTextNode(taskObject.name); // create text html element with user task input name
@@ -167,7 +169,7 @@ class UiLogic {
     li.addEventListener("click", ({ target }) => {
       this.CheckedTask(target, false); // mark task for complete status
     });
-    this.CreateRemoveItemFromList(li, taskList, taskObject.id);
+    await this.CreateRemoveItemFromList(li, taskList, taskObject.id);
     this.addCalendarIcon(li, taskObject.datetime);
     const pokemonObj = this.getPokemonObjectByName(taskList, taskObject.name);
     if (pokemonObj !== null && index === 0) {
@@ -194,7 +196,9 @@ class UiLogic {
     // Add a "checked" symbol when clicking on a list item
     if (!target.classList.contains('checked')) {
       const id = target.getAttribute('taskId')
+      //need to fix it because check task for finish.
       let taskObject = this.getTask(id);
+      console.log(taskObject,"vladddiiidididi");
       this.updateTask(taskObject.id, TYPE_FINISHED, taskObject.name, taskObject.datetime, false)
       if (!withSort) {
         this.rotateImage();
@@ -209,8 +213,8 @@ class UiLogic {
   }
 
 
-  sortList() {
-    this.bindTaskList(true);
+  async sortList() {
+   await this.bindTaskList(true);
   }
 
   clearList() {
@@ -269,21 +273,21 @@ class UiLogic {
   }
 
 
-  removeItem(li, taskList, id) {
-    taskList[id - 1] = undefined;
-    li.remove();
+  // removeItem(li, taskList, id) {
+  //   taskList[id - 1] = undefined;
+  //   li.remove();
 
-  }
+  // }
 
 
-  CreateRemoveItemFromList(li, taskList, id) {
+  async CreateRemoveItemFromList(li, taskList, idItem) {
     const span = document.createElement("SPAN");
     const txt = document.createTextNode("\u00D7");
     span.className = "close";
     span.appendChild(txt);
     li.appendChild(span);
-    span.onclick = () => {
-
+    span.onclick = async () => {
+    await item_client.deleteItem(idItem-1);
       const spinning = [
         { transform: 'rotate(0) scale(1)' },
         { transform: 'rotate(0deg) scale(0)' }
