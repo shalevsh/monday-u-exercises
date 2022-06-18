@@ -4,12 +4,12 @@ class ItemManager {
   constructor() {
     this.taskList = [];
     this.pokemonClinet = new PokemonClient();
+    this.newItems = [];
 
   }
 
   async addItem(item) {
-    console.log(item);
-
+    this.newItems = [];
     try{
       let data =  await fs.readFile("todoDB.json")
       this.taskList = JSON.parse(data);
@@ -32,13 +32,16 @@ class ItemManager {
         }
         if (pokemonObj) {
           pokemons = [pokemonObj];
+          this.newItems.push(pokemonObj);
         } else {
           pokemons = await this.pokemonClinet.fetchPokemon(ArrWithoutDuplicates);
+          pokemons.forEach((pokemon) => {
+            this.newItems.push(pokemon);
+          })
         }
         this.taskList = this.taskList.concat(
           pokemons.map((pokemon) => {
             const obj = { isPokemon: true, item: pokemon, isDisplay: false }
-            console.log(obj)
             return obj
           })
         );
@@ -51,10 +54,11 @@ class ItemManager {
       }
     } else {
       this.taskList.push({ isPokemon: false, item: item });
+      await this.saveFullTaskList();
       return this.taskList[this.taskList.length-1];
     }
     await this.saveFullTaskList();
-    return this.taskList[this.taskList.length-1];
+    return this.newItems;
   }
 
 
@@ -107,14 +111,7 @@ class ItemManager {
   
   async getTaskList() {
     this.taskList = await this.jsonReader("./todoDB.json")
-     
-      if (this.taskList.length === 0) {
-      }
-      else {
-        for (let index = 0; index < this.taskList.length; index++) {
-          const element = this.taskList[index];
-        }
-      }
+    return this.taskList;
   }
 
   async DeleteTask(index) {
@@ -122,7 +119,6 @@ class ItemManager {
   if(this.taskList.length === 0)
   {
     return;
-
   }
         if(!this.taskList.indexOf(index))
         {
@@ -149,8 +145,14 @@ class ItemManager {
 
     }
 }
+
+async deleteAllItems(){
+  this.taskList =[];
+  this.newItems = [];
+await fs.writeFile(this.jsonFile, JSON.stringify(this.taskList));
 }
 
+}
 
 export default new ItemManager;
 

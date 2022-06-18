@@ -34,7 +34,7 @@ export default class PokemonClinet {
 
   async savePokemonList(pokemonsArrList) {
     await fs.writeFile("./pokemonsDB.json", JSON.stringify(pokemonsArrList), err => {
-      if (err) console.log(chalk.red("Error writing file of pokemons Data Base:", err));
+      if (err) console.log("Error writing file of pokemons Data Base:", err);
     });
   }
 

@@ -10,29 +10,29 @@ export async function createItem(req, res, next) {
     }
   }
   
-//   export async function deleteItem(req, res, next) {
-//     try {
-//       const itemId = parseInt(req.params.id);
-//       await ItemManager.deleteItem(itemId);
-//       res.status(200).json(itemId);
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
-//   export async function getAllItems(req, res, next) {
-//     try {
-//       const items = await itemManager.getAllItems();
-//       res.status(200).json(items);
-//     } catch (err) {
-//       next(err);
-//     }
-//   }
+  export async function deleteItem(req, res, next) {
+    try {
+      const itemId = parseInt(req.params.id);
+      await ItemManager.DeleteTask(itemId);
+      res.status(200).json(itemId);
+    } catch (err) {
+      next(err);
+    }
+  }
+  export async function getAllItems(req, res, next) {
+    try {
+      const items = await ItemManager.getTaskList();
+      res.status(200).json(items);
+    } catch (err) {
+      next(err);
+    }
+  }
   
-//   export async function deleteAllItems(req, res, next) {
-//       try {
-//         await ItemManager.deleteAllItems();
-//         res.status(200).json('all items deleted');
-//       } catch (err) {
-//         next(err);
-//       }
-//     }
+  export async function deleteAllItems(req, res, next) {
+      try {
+        await ItemManager.deleteAllItems();
+        res.status(200).json('all items deleted');
+      } catch (err) {
+        next(err);
+      }
+    }

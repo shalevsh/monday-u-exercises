@@ -1,15 +1,23 @@
-import  ItemManager  from "./ItemManager.js";
+// import  ItemManager  from "./ItemManager.js";
+import item_client from "./clients/item_client.js";
+import UiLogic from "./services/Uilogic.js";
 class Main {
   constructor() {
-   this.itemManager = new ItemManager();
+  //  this.itemManager = new ItemManager();
    this.addButton = document.getElementById("add-btn");
    this.inputTaskName = document.getElementById("input-task");
    this.sortButton = document.getElementById("sort-btn");
    this.clearAllButton = document.getElementById("clear-btn");
   }
 
-  init() {
-    this.ListenToAddItem()
+  async init() {
+    const items = await item_client.fetchItems();
+    console.log(items,"mewor42394392");
+    UiLogic.renderItem(items);
+    
+
+
+    await this.ListenToAddItem();
     this.listenToSortButton();
     this.listenToClearAllTasks();
 
@@ -17,28 +25,32 @@ class Main {
 
   }
  
-   ListenToAddItem(){
-      this.AddTaskByEnter();
-      this.addButton.addEventListener("click", () => {
-      this.itemManager.addItem(this.inputTaskName.value)
+  async ListenToAddItem(){
+      await this.AddTaskByEnter();
+      this.addButton.addEventListener("click", async() => {
+    //  this.itemManager.addItem(this.inputTaskName.value)
+      const items = await item_client.createItem(this.inputTaskName.value);
+      console.log([items],"mewo77")
+      UiLogic.renderItem([items]);
       this.inputTaskName.value = "";
       //Clear the input when a new item is added
     });
 }
 listenToSortButton(){
   this.sortButton.addEventListener("click", () => {
-    this.itemManager.sortList();
+   // this.itemManager.sortList();
 })};
 listenToClearAllTasks(){
   this.clearAllButton.addEventListener("click", () => {
-    this.itemManager.clearList();
+  //  this.itemManager.clearList();
 })};
 
-  AddTaskByEnter() {
+ async AddTaskByEnter() {
     this.inputTaskName.addEventListener("keypress", event => {
       if (event.key === "Enter") {
         event.preventDefault();
-        this.itemManager.addItem(this.inputTaskName.value)
+        //const items = await item_client.createItem(this.inputTaskName.value);
+        console.log(items,"mewo3");
         this.inputTaskName.value = "";
 
       }

@@ -13,10 +13,7 @@ class UiLogic {
   }
 
   renderItem(taskList) {
-    console.log(taskList,"gdsjgdsnsiogdngdsiosdgngdsiosngdio");
-
     this.addTaskWatcher();
-
     const filterTaskList = taskList.filter((element) => element.isDisplay === false)
     filterTaskList.forEach(element => {
       let taskName;
@@ -50,6 +47,7 @@ class UiLogic {
   }
 
   addTask(type, name, date, isPokemon) {
+
     let id = this.getId();
     if (isPokemon === true) {
       name = "Catch " + name;
@@ -58,6 +56,7 @@ class UiLogic {
     return id;
   }
   CreateNewListItemElement(taskString, taskList, isPokemon) {
+    console.log(taskList,"mewo4")
     if (taskString === '') {
       alert("You must write something!");
     } else {
@@ -434,7 +433,7 @@ class UiLogic {
 
     }
   }
-} export default UiLogic;
+} export default new UiLogic;
 
 
 
