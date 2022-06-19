@@ -14,10 +14,11 @@ class ItemManager {
       let data =  await fs.readFile("todoDB.json")
       this.taskList = JSON.parse(data);
       
+      
     }
     catch(err)
     {
-      await fs.writeFile("todoDB.json",JSON.stringify(this.taskList))
+      await fs.writeFile("todoDB.json",JSON.stringify([]))
 
     }
     const pokemonObj = await this.pokemonClinet.checkByPokemonName(item);
@@ -36,8 +37,8 @@ class ItemManager {
         } else {
           pokemons = await this.pokemonClinet.fetchPokemon(ArrWithoutDuplicates);
           pokemons.forEach((pokemon) => {
-            this.newItems.push(pokemon);
-
+            const pokemonObj = { isPokemon: true, item: pokemon, isDisplay: false }
+            this.newItems.push(pokemonObj);
           })
         }
         this.taskList = this.taskList.concat(
@@ -67,6 +68,7 @@ class ItemManager {
     try{
      await fs.writeFile("./todoDB.json", JSON.stringify(this.taskList))
     }catch(err){
+    
     }
   }
 
@@ -103,15 +105,24 @@ class ItemManager {
    async addTask(taskName) {
    this.taskList = await  this.jsonReader("./todoDB.json")
       // increase customer order count by 1
-      taskArray.push(taskName);
+      this.taskList.push(taskName);
       try{
-       await fs.writeFile("./todoDB.json", JSON.stringify(taskArray))
-       }catch(err){
-       }
+        await fs.writeFile("./todoDB.json", JSON.stringify(taskArray))
+      }catch(err){
+        await fs.writeFile('./todoDB.json',JSON.stringify([]));
+      }
+
       }
   
   async getTaskList() {
     this.taskList = await this.jsonReader("./todoDB.json")
+    return this.taskList;
+  }
+
+  async sortItems() {
+    this.taskList = await this.jsonReader("./todoDB.json");
+    this.taskList.reverse();
+    await fs.writeFile("./todoDB.json",JSON.stringify(this.taskList));
     return this.taskList;
   }
 
@@ -150,7 +161,13 @@ class ItemManager {
 async deleteAllItems(){
   this.taskList =[];
   this.newItems = [];
-await fs.writeFile(this.jsonFile, JSON.stringify(this.taskList));
+  
+  fs.writeFile('./todoDB.json', JSON.stringify(this.taskList),function(err){
+    if(err){
+      return false;
+    }
+    return true;
+  });
 }
 
 }

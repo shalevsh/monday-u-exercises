@@ -1,50 +1,51 @@
-// import  ItemManager  from "./ItemManager.js";
 import item_client from "./clients/item_client.js";
 import UiLogic from "./services/Uilogic.js";
 class Main {
   constructor() {
-  //  this.itemManager = new ItemManager();
    this.addButton = document.getElementById("add-btn");
    this.inputTaskName = document.getElementById("input-task");
    this.sortButton = document.getElementById("sort-btn");
    this.clearAllButton = document.getElementById("clear-btn");
   }
-
+   checkObject(arr) {
+    // check if arr is array
+    const result = Array.isArray(arr);
+    return result;
+  }
   async init() {
     const items = await item_client.fetchItems();
-    console.log(items,"mewor42394392");
-   await UiLogic.renderItem(items);
+    await UiLogic.renderItem(items);
     this.AddTaskByEnter();
-
-
-
-
     await this.ListenToAddItem();
     this.listenToSortButton();
     this.listenToClearAllTasks();
-
-   
-
   }
  
   async ListenToAddItem(){
-      // await this.AddTaskByEnter();
       this.addButton.addEventListener("click", async() => {
-    //  this.itemManager.addItem(this.inputTaskName.value)
-      const items = await item_client.createItem(this.inputTaskName.value);
-      UiLogic.renderItem([items]);
+      const items = await item_client.createItem(`${this.inputTaskName.value}`);
+      if(this.checkObject(items)===true){
+        items.forEach(element => {
+          UiLogic.renderItem([element]);
+        });
+      }else{
+        UiLogic.renderItem([items]);
+      }
       this.inputTaskName.value = "";
-      //Clear the input when a new item is added
     });
 }
-listenToSortButton(){
-  this.sortButton.addEventListener("click", () => {
-   // this.itemManager.sortList();
+async listenToSortButton(){
+  this.sortButton.addEventListener("click",async() => {
+  const sorted =  await item_client.sortItems();
+  await UiLogic.renderItem(sorted);
 })};
-listenToClearAllTasks(){
-  this.clearAllButton.addEventListener("click", () => {
-  //  this.itemManager.clearList();
-})};
+
+async listenToClearAllTasks(){
+  this.clearAllButton.addEventListener("click", async() => {
+    const result = await item_client.deleteAllItems();
+    window.location.reload();
+  })
+};
 
   AddTaskByEnter() {
     this.inputTaskName.addEventListener("keypress", event => {

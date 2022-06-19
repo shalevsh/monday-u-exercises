@@ -4,6 +4,8 @@
 <head>
   <title>TODO Pokemon</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="./jquery.loadingModal.min.css" />
+  <link rel="stylesheet" href="./toastr.min.css" />
 </head>
 
 <body>
@@ -35,10 +37,9 @@
       <button class="vbtn" id="sort-btn">Sort</button>
       <button class="vbtn" id="clear-btn">Clear All</button>
     </div>
-  </div>
-  <div style="visibility: hidden" class="NbaImage">
-    <img id="imageNBA" src="bg.png" style="width: 684px" />
-  </div>
+    <div style="visibility: hidden" class="NbaImage">
+      <img id="imageNBA" src="bg.png" style="width: 684px" />
+    </div>
   <div class="floating" id="floating_square">
     <h2 style="text-align: center; line-height: 2; color: beige">
       WAIT <br />FOR<br />
@@ -46,6 +47,9 @@
     </h2>
   </div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script type="module" src="./jquery.loadingModal.min.js"></script>
+<script src="./toastr.min.js"></script>
 <script type="module" src="./main.js"></script>
 
 </html>

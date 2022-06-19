@@ -16,7 +16,7 @@ class UiLogic {
   async renderItem(taskList) {
     await this.addTaskWatcher();
     const filterTaskList = taskList.filter((element) => element.isDisplay === false);
-    console.log(filterTaskList)
+    
     filterTaskList.forEach(async (element) => {
       let taskName;
       if (element.isPokemon === false) {
@@ -29,7 +29,6 @@ class UiLogic {
       const isPokemon = element.isPokemon;
      await this.CreateNewListItemElement(taskName, taskList, isPokemon);
     });
-    console.log(filterTaskList)
   }
 
   async addTaskWatcher() {
@@ -96,6 +95,7 @@ class UiLogic {
 
   async bindTaskList(withSort, taskList) {
     let sortedList = this.getSortedTaskList(withSort);
+    // document.getElementById("my-ul").innerHTML = "";
     if (sortedList.length > 0) {
       document.getElementById("my-ul").innerHTML = "";
       for (let index = 0; index < sortedList.length; index++) {
@@ -148,6 +148,7 @@ class UiLogic {
   }
 
  async CreateNewListItemElementByTaskObject(taskObject, taskList, index) {
+    // document.getElementById("my-ul").innerHTML = '';
     // Create a new list item when clicking on the "Add" button
     const li = document.createElement("li");   //create new list item html element  
     const textElement = document.createTextNode(taskObject.name); // create text html element with user task input name
@@ -189,21 +190,13 @@ class UiLogic {
   }
 
   CheckedTask(target, withSort) {
-    console.log(target.tagName);
     if (target.tagName == "INPUT" || target.tagName == "BUTTON") {
       return;
     }
     // Add a "checked" symbol when clicking on a list item
     if (!target.classList.contains('checked')) {
       const id = target.getAttribute('taskId')
-      //need to fix it because check task for finish.
       let taskObject = this.getTask(id);
-      console.log(taskObject,"vladddiiidididi");
-      this.updateTask(taskObject.id, TYPE_FINISHED, taskObject.name, taskObject.datetime, false)
-      if (!withSort) {
-        this.rotateImage();
-      }
-
     }
     else {
       let taskObject = this.getTask(target.getAttribute('taskId'));
@@ -427,7 +420,6 @@ class UiLogic {
   handleCountTask() {
     const numTasks = document.getElementById("my-ul").childElementCount;
     const count = document.getElementById("count");
-    console.log(numTasks)
 
     if (numTasks === 0) {
       count.style.visibility = "hidden";
