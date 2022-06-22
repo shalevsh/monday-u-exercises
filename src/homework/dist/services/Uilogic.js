@@ -1,4 +1,3 @@
-import item_client from "../clients/item_client.js"
 const TYPE_DEADLINE = 1
 const TYPE_NOTCOMPLETE = 2
 const TYPE_FINISHED = 3
@@ -429,7 +428,7 @@ class UiLogic {
 
     }
   }
-} export default new UiLogic;
+}
 
 
 

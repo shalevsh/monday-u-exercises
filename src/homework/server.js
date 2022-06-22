@@ -1,8 +1,8 @@
 // Express boilerplate, hosting the `dist` file, connecting to the routes
-import express from 'express';
-import itemRouter from './server/routes/api.js';
-import errorHandler from './server//middleware/errorHandler.js';
-import cors from 'cors'
+const express = require('express');
+const itemRouter = require( './server/routes/api.js');
+const {errorHandler} = require( './server//middleware/errorHandler.js');
+const cors = require('cors')
 const  port = 8080;
 const app = express();
 

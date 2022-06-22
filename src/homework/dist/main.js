@@ -1,7 +1,10 @@
-import item_client from "./clients/item_client.js";
-import UiLogic from "./services/Uilogic.js";
+//  const item_client = require("./clients/item_client.js");
+// const UiLogic = require("./services/Uilogic.js");
 class Main {
   constructor() {
+   this.item_client= new ItemClient();
+   this.uiLogic= new UiLogic();
+
    this.addButton = document.getElementById("add-btn");
    this.inputTaskName = document.getElementById("input-task");
    this.sortButton = document.getElementById("sort-btn");
@@ -13,8 +16,8 @@ class Main {
     return result;
   }
   async init() {
-    const items = await item_client.fetchItems();
-    await UiLogic.renderItem(items);
+    const items = await this.item_client.fetchItems();
+    await this.uiLogic.renderItem(items);
     this.AddTaskByEnter();
     await this.ListenToAddItem();
     this.listenToSortButton();
@@ -23,26 +26,26 @@ class Main {
  
   async ListenToAddItem(){
       this.addButton.addEventListener("click", async() => {
-      const items = await item_client.createItem(`${this.inputTaskName.value}`);
+      const items = await this.item_client.createItem(`${this.inputTaskName.value}`);
       if(this.checkObject(items)===true){
         items.forEach(element => {
-          UiLogic.renderItem([element]);
+          this.uiLogic.renderItem([element]);
         });
       }else{
-        UiLogic.renderItem([items]);
+        this.uiLogic.renderItem([items]);
       }
       this.inputTaskName.value = "";
     });
 }
 async listenToSortButton(){
   this.sortButton.addEventListener("click",async() => {
-  const sorted =  await item_client.sortItems();
-  await UiLogic.renderItem(sorted);
+  const sorted =  await this.item_client.sortItems();
+  await this.uiLogic.renderItem(sorted);
 })};
 
 async listenToClearAllTasks(){
   this.clearAllButton.addEventListener("click", async() => {
-    const result = await item_client.deleteAllItems();
+    const result = await this.item_client.deleteAllItems();
     window.location.reload();
   })
 };

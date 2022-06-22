@@ -1,7 +1,7 @@
 
-import  {promises as fs } from "fs";
-import axios from 'axios';
-export default class PokemonClinet {
+const fs = require("fs").promises;
+const axios = require( 'axios');
+  class PokemonClinet {
   constructor() {
   }
   fetchPokemon(arr) {
@@ -49,4 +49,4 @@ export default class PokemonClinet {
   }
 }
 
-
+module.exports= new PokemonClinet();

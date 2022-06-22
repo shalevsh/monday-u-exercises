@@ -1,9 +1,9 @@
-import PokemonClient from "../clients/PokemonClient.js";
-import {promises as fs} from "fs";
+const pokemonClient = require("../clients/PokemonClient.js");
+const {Item} = require("../db/models")
+const fs = require("fs").promises;
 class ItemManager {
   constructor() {
     this.taskList = [];
-    this.pokemonClinet = new PokemonClient();
     this.newItems = [];
 
   }
@@ -21,7 +21,7 @@ class ItemManager {
       await fs.writeFile("todoDB.json",JSON.stringify([]))
 
     }
-    const pokemonObj = await this.pokemonClinet.checkByPokemonName(item);
+    const pokemonObj = await pokemonClient.checkByPokemonName(item);
     const { isPokemon, arrOfPokemonsID } = this.isPokemon(item);
 
     if (isPokemon || pokemonObj) {
@@ -35,7 +35,7 @@ class ItemManager {
           pokemons = [pokemonObj];
           this.newItems.push(pokemonObj);
         } else {
-          pokemons = await this.pokemonClinet.fetchPokemon(ArrWithoutDuplicates);
+          pokemons = await pokemonClient.fetchPokemon(ArrWithoutDuplicates);
           pokemons.forEach((pokemon) => {
             const pokemonObj = { isPokemon: true, item: pokemon, isDisplay: false }
             this.newItems.push(pokemonObj);
@@ -56,6 +56,8 @@ class ItemManager {
       }
     } else {
       this.taskList.push({ isPokemon: false, item: item ,isDisplay: false});
+      await Item.bulkCreate(this.newItems);
+      //this.taskLis = Item.findAll({raw:true});
       await this.saveFullTaskList();
       return this.taskList[this.taskList.length-1];
     }
@@ -172,5 +174,4 @@ async deleteAllItems(){
 
 }
 
-export default new ItemManager;
-
+module.exports = new ItemManager();

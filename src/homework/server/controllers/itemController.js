@@ -1,5 +1,5 @@
-import ItemManager from "../services/ItemManager.js"
-export async function createItem(req, res, next) {
+const ItemManager = require("../services/ItemManager.js")
+ async function createItem(req, res, next) {
     try {
        const item = req.body.item;
        const data  = await ItemManager.addItem(item);
@@ -9,7 +9,7 @@ export async function createItem(req, res, next) {
     }
   }
   
-  export async function deleteItem(req, res, next) {
+   async function deleteItem(req, res, next) {
     try {
       const itemId = parseInt(req.params.id);
       await ItemManager.DeleteTask(itemId);
@@ -19,7 +19,7 @@ export async function createItem(req, res, next) {
     }
   }
 
-  export async function sortItems(req, res, next) {
+   async function sortItems(req, res, next) {
     try {
       const items = await ItemManager.sortItems();
       res.status(200).json(items);
@@ -28,7 +28,7 @@ export async function createItem(req, res, next) {
     }
   }
 
-  export async function getAllItems(req, res, next) {
+   async function getAllItems(req, res, next) {
     try {
       const items = await ItemManager.getTaskList();
       res.status(200).json(items);
@@ -37,7 +37,7 @@ export async function createItem(req, res, next) {
     }
   }
   
-  export async function deleteAllItems(req, res, next) {
+   async function deleteAllItems(req, res, next) {
       try {
         const result = await ItemManager.deleteAllItems();
         if(result) res.status(200).json('all items deleted');
@@ -46,3 +46,4 @@ export async function createItem(req, res, next) {
         next(err);
       }
     }
+    module.exports = {createItem,deleteItem,sortItems,getAllItems,deleteAllItems};
