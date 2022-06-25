@@ -14,6 +14,7 @@ class UiLogic {
 
   async renderItem(taskList) {
     await this.addTaskWatcher();
+    
     const filterTaskList = taskList.filter((element) => element.isDisplay === false);
     
     filterTaskList.forEach(async (element) => {

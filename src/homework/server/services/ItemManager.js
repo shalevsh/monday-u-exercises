@@ -37,7 +37,7 @@ class ItemManager {
         } else {
           pokemons = await pokemonClient.fetchPokemon(ArrWithoutDuplicates);
           pokemons.forEach((pokemon) => {
-            const pokemonObj = { isPokemon: true, item: pokemon, isDisplay: false }
+            const pokemonObj = { isPokemon: true, item: pokemon.name, isDisplay: false }
             this.newItems.push(pokemonObj);
           })
         }
@@ -56,11 +56,14 @@ class ItemManager {
       }
     } else {
       this.taskList.push({ isPokemon: false, item: item ,isDisplay: false});
+      this.newItems.push({ isPokemon: false, item: item ,isDisplay: false});
       await Item.bulkCreate(this.newItems);
-      //this.taskLis = Item.findAll({raw:true});
+      //this.taskList = Item.findAll({raw:true});
       await this.saveFullTaskList();
-      return this.taskList[this.taskList.length-1];
+      return this.newItems;
+      //return this.taskList[this.taskList.length-1];
     }
+    await Item.bulkCreate(this.newItems);
     await this.saveFullTaskList();
     return this.newItems;
   }

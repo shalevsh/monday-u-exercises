@@ -23,5 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     tableName:'Items',
     timestamps: false,
   });
+  Item.removeAttribute("id");
   return Item;
 };
