@@ -5,14 +5,17 @@ class ItemManager {
   constructor() {
     this.taskList = [];
     this.newItems = [];
+    this.newItemsForTable=[];
 
   }
 
   async addItem(item) {
     this.newItems = [];
+    this.newItemsForTable=[];
     try{
-      let data =  await fs.readFile("todoDB.json")
-      this.taskList = JSON.parse(data);
+      this.taskList = await Item.findAll({raw:true});
+      //let data =  await fs.readFile("todoDB.json")
+      //this.taskList = JSON.parse(data);
       
       
     }
@@ -28,22 +31,25 @@ class ItemManager {
       let ArrWithoutDuplicates;
       let pokemons;
       try {
-        if (isPokemon) {
-          ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
-        }
+       //  ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
         if (pokemonObj) {
-          pokemons = [pokemonObj];
-          this.newItems.push(pokemonObj);
+          pokemons=[pokemonObj];
+          const pokemonObjForTable = { isPokemon: true, item: pokemonObj.name, isDisplay: false, status: false }
+          this.newItemsForTable.push(pokemonObjForTable);
+          const pokemonObject= { isPokemon: true, item: pokemonObj, isDisplay: false, status: false }
+          this.newItems.push(pokemonObject);
         } else {
-          pokemons = await pokemonClient.fetchPokemon(ArrWithoutDuplicates);
+          pokemons = await pokemonClient.fetchPokemon(arrOfPokemonsID);
           pokemons.forEach((pokemon) => {
-            const pokemonObj = { isPokemon: true, item: pokemon.name, isDisplay: false }
+            const pokemonObjForTable = { isPokemon: true, item: pokemon.name, isDisplay: false, status: false }
+            this.newItemsForTable.push(pokemonObjForTable);
+            const pokemonObj= { isPokemon: true, item: pokemon, isDisplay: false, status: false }
             this.newItems.push(pokemonObj);
           })
         }
         this.taskList = this.taskList.concat(
           pokemons.map((pokemon) => {
-            const obj = { isPokemon: true, item: pokemon, isDisplay: false }
+            const obj = { isPokemon: true, item: pokemon, isDisplay: false, status: false }
             return obj
           })
         );
@@ -55,15 +61,14 @@ class ItemManager {
         });
       }
     } else {
-      this.taskList.push({ isPokemon: false, item: item ,isDisplay: false});
-      this.newItems.push({ isPokemon: false, item: item ,isDisplay: false});
+      this.taskList.push({ isPokemon: false, item: item ,isDisplay: false, status: false});
+      this.newItems.push({ isPokemon: false, item: item ,isDisplay: false, status: false});
       await Item.bulkCreate(this.newItems);
-      //this.taskList = Item.findAll({raw:true});
       await this.saveFullTaskList();
       return this.newItems;
-      //return this.taskList[this.taskList.length-1];
     }
-    await Item.bulkCreate(this.newItems);
+
+    await Item.bulkCreate(this.newItemsForTable);
     await this.saveFullTaskList();
     return this.newItems;
   }
@@ -78,11 +83,9 @@ class ItemManager {
   }
 
 
-  getItemsToAdd(arrOfTasks) {
-    const pokemonsIdArr = this.taskList
-      .filter((task) => task.isPokemon)
-      .map((pokemon) => pokemon.item.id.toString());
-    const ArrWithoutDuplicates = arrOfTasks.filter((id) => !pokemonsIdArr.includes(id));
+  getItemsToAdd(arrOfNamesTasks) {
+    const pokemonsArr = this.taskList.filter((task) => task.isPokemon == true).map((pokemon) => pokemon.item);
+    const ArrWithoutDuplicates = arrOfNamesTasks.filter((name) => !pokemonsArr.includes(name));
     return ArrWithoutDuplicates;
   }
 
@@ -103,7 +106,8 @@ class ItemManager {
   }
 
   async loadTaskList() {
-    this.taskList = await this.jsonReader("./todoDB.json")
+    this.taskList = await Item.findAll({raw:true});
+    //this.taskList = await this.jsonReader("./todoDB.json")
 
   }
 
@@ -120,39 +124,44 @@ class ItemManager {
       }
   
   async getTaskList() {
-    this.taskList = await this.jsonReader("./todoDB.json")
+    this.taskList = await Item.findAll({raw:true}); // with id property 
     return this.taskList;
   }
 
   async sortItems() {
-    this.taskList = await this.jsonReader("./todoDB.json");
-    this.taskList.reverse();
-    await fs.writeFile("./todoDB.json",JSON.stringify(this.taskList));
+    //this.taskList = await this.jsonReader("./todoDB.json");
+    // this.taskList = await Item.findAll({raw:true});
+    // this.taskList.reverse();
+    //await fs.writeFile("./todoDB.json",JSON.stringify(this.taskList));
     return this.taskList;
   }
 
   async DeleteTask(index) {
-  this.taskList = await this.jsonReader("./todoDB.json")
-  if(this.taskList.length === 0)
-  {
-    return;
+  //this.taskList = await Item.findAll({raw:true});
+  // this.taskList = await this.jsonReader("./todoDB.json")
+  
+  try {
+    await Item.destroy({ where: { id: index+1 } });
+    const res = await Item.findAndCountAll();
+    console.log(res,"res")
+      if(res.count == 0){
+        await Item.destroy({
+          where: {},
+          truncate: true,
+          restartIdentity: true,
+        });
+      } 
+    
+  } catch (err) {
+  throw `There is no task with id: ${index+1} `;
   }
-        if(!this.taskList.indexOf(index))
-        {
-          return;
-        }
-        this.taskList.splice(index, 1);
-        try{
-        await fs.writeFile("./todoDB.json", JSON.stringify(this.taskList));
-        }
-      catch(err){
-        }
-      }
+}
  
   async jsonReader(filePath) {
     try{
       let data =  await fs.readFile(filePath)
       let tasks = JSON.parse(data);
+      //let tasks = await Item.findAll({raw:true});
       return tasks;
     }
     catch(err)
@@ -166,12 +175,10 @@ class ItemManager {
 async deleteAllItems(){
   this.taskList =[];
   this.newItems = [];
-  
-  fs.writeFile('./todoDB.json', JSON.stringify(this.taskList),function(err){
-    if(err){
-      return false;
-    }
-    return true;
+  await Item.destroy({
+    where: {},
+    truncate: true,
+    restartIdentity: true,
   });
 }
 

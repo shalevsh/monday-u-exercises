@@ -27,6 +27,7 @@ class Main {
   async ListenToAddItem(){
       this.addButton.addEventListener("click", async() => {
       const items = await this.item_client.createItem(`${this.inputTaskName.value}`);
+      
       if(this.checkObject(items)===true){
         items.forEach(element => {
           this.uiLogic.renderItem([element]);
