@@ -97,15 +97,12 @@ class UiLogic {
 
   async bindTaskList(withSort, taskObject) {
     let sortedList = this.getSortedTaskList(withSort);
-    console.log(sortedList.length,"sortedList.length");
     if (sortedList.length > 0) {
       document.getElementById("my-ul").innerHTML = "";
       for (let index = 0; index < sortedList.length; index++) {
         const LiObject = sortedList[index];
         if (taskObject) {
-          console.log(LiObject,"LiObject");
-          console.log(taskObject,"taskObject");
-
+         
          await this.CreateNewListItemElementByTaskObject(LiObject, taskObject, index)
         } else {
          await this.CreateNewListItemElementByTaskObject(LiObject, sortedList, index)
@@ -153,7 +150,6 @@ class UiLogic {
   }
 
  async CreateNewListItemElementByTaskObject(taskObject, taskList, index) {
-    console.log(taskObject.name,"create html taskObject")
     // document.getElementById("my-ul").innerHTML = '';
     // Create a new list item when clicking on the "Add" button
     const li = document.createElement("li");   //create new list item html element  

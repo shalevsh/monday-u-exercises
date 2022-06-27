@@ -101,7 +101,6 @@ class ItemManager {
   try {
     await Item.destroy({ where: { id: index+1 } });
     const res = await Item.findAndCountAll();
-    console.log(res,"res")
       if(res.count == 0){
         await Item.destroy({
           where: {},
