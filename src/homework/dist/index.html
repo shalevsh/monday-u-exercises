@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>TODO Pokemon</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- <link rel="stylesheet" href="./jquery.loadingModal.min.css" />
+  <link rel="stylesheet" href="./toastr.min.css" /> -->
+</head>
+
+<body>
+  <div id="my-div" class="header">
+    <h2 class="Heading">Pokemon To Do List</h2>
+
+    <div class="container" >
+      <label id="drag-list" for="sort-dropdown"> Draglist type sorts</label>
+      <select id="sort-dropdown">
+        <option value="1">ABC</option>
+        <option value="2">Deadline</option>
+        <option value="3">Not complete</option>
+        <option value="4">Finished</option>
+      </select>
+    </div>
+    <div>
+      <input type="text" id="input-task" placeholder="Title..." style="margin-left: 70px;" />
+      <button class="btn" id="add-btn">
+        +
+      </button>
+    </div>
+
+    <br />
+    <ul id="my-ul">
+    </ul>
+
+    <div class="container" style="margin-bottom: 10px; visibility: hidden">
+      <span id = "count"> </span>
+      <button class="vbtn" id="sort-btn">Sort</button>
+      <button class="vbtn" id="clear-btn">Clear All</button>
+    </div>
+    <div style="visibility: hidden" class="NbaImage">
+      <img id="imageNBA" src="bg.png" style="width: 684px" />
+    </div>
+  <div class="floating" id="floating_square">
+    <h2 style="text-align: center; line-height: 2; color: beige">
+      WAIT <br />FOR<br />
+      TASKS
+    </h2>
+  </div>
+</body>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+<script type="module" src="./jquery.loadingModal.min.js"></script>
+<script src="./toastr.min.js"></script> -->
+<script  src="./clients/ItemClient.js"></script>
+<script  src="./services/Uilogic.js"></script>
+<script  src="./main.js"></script>
+
+
+</html>
