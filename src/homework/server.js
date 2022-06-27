@@ -2,13 +2,14 @@
 const express = require('express');
 const itemRouter = require( './server/routes/api.js');
 const {errorHandler} = require( './server//middleware/errorHandler.js');
+const morgan = require("morgan");
 const cors = require('cors')
 const  port = 8080;
 const app = express();
 
 
 
-app.use([cors(),express.json()]);
+app.use([morgan("common"),cors(),express.json()]);
 app.use(express.static( 'dist'));
 app.use('/item', itemRouter);
 app.use(errorHandler);

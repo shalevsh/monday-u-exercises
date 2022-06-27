@@ -14,30 +14,22 @@ class UiLogic {
   }
 
   async renderItem(taskList) {
-    console.log(taskList,"taskList");
     await this.addTaskWatcher();
     const filterTaskList = taskList.filter((element) => element.isDisplay == false);
     filterTaskList.forEach(async (element) => {
-      console.log(element,"element");
       let taskName;
-      if (element.isPokemon == false) {
+      const isPokemon = element.isPokemon;
+      const taskId = element.id
+      if (isPokemon == false) {
         taskName = element.item
-        element.isDisplay = 1;
       } else {
-        //console.log(element.item.name,"element.item.name");
         if(typeof element.item  === 'string'){;
         taskName = element.item
         }else{
-          console.log(element,"element2");
           taskName = element.item.name
-          console.log(taskName,"taskName when add pokemon");
-        }
-        console.log(element,"element");
-        console.log(taskName,"taskName");
-        element.isDisplay = true;
+        }       
       }
-      const isPokemon = element.isPokemon;
-      const taskId = element.id
+      element.isDisplay = true;
      await this.CreateNewListItemElement(taskName, taskList, isPokemon,taskId);
     });
   }
@@ -61,19 +53,18 @@ class UiLogic {
 
   addTask(type, name, date, isPokemon,taskId) {
      let id = taskId === undefined ? this.getId(): taskId;
-     console.log(id,"id"); 
     if (isPokemon == true) {
       name = "Catch " + name;
     }
     this.taskList.push({ id: id, type: type, name: name, datetime: date, createDateTime: new Date(), isAnimated: true });
     return id;
   }
- async CreateNewListItemElement(taskString, taskList, isPokemon,taskId) {
+ async CreateNewListItemElement(taskString, taskObject, isPokemon,taskId) {
     if (taskString === '') {
       alert("You must write something!");
     } else {
       this.addTask(TYPE_NOTCOMPLETE, taskString, null, isPokemon,taskId);
-     await this.bindTaskList(false, taskList)
+     await this.bindTaskList(false, taskObject)
     }
   }
 
@@ -104,15 +95,18 @@ class UiLogic {
     this.taskList[indexFound] = { id: id, type: type, name: name, datetime: date, createDateTime: createDateTime, isAnimated: isAnimated };
   }
 
-  async bindTaskList(withSort, taskList) {
+  async bindTaskList(withSort, taskObject) {
     let sortedList = this.getSortedTaskList(withSort);
-    // document.getElementById("my-ul").innerHTML = "";
+    console.log(sortedList.length,"sortedList.length");
     if (sortedList.length > 0) {
       document.getElementById("my-ul").innerHTML = "";
       for (let index = 0; index < sortedList.length; index++) {
         const LiObject = sortedList[index];
-        if (taskList) {
-         await this.CreateNewListItemElementByTaskObject(LiObject, taskList, index)
+        if (taskObject) {
+          console.log(LiObject,"LiObject");
+          console.log(taskObject,"taskObject");
+
+         await this.CreateNewListItemElementByTaskObject(LiObject, taskObject, index)
         } else {
          await this.CreateNewListItemElementByTaskObject(LiObject, sortedList, index)
         }
@@ -159,14 +153,22 @@ class UiLogic {
   }
 
  async CreateNewListItemElementByTaskObject(taskObject, taskList, index) {
+    console.log(taskObject.name,"create html taskObject")
     // document.getElementById("my-ul").innerHTML = '';
     // Create a new list item when clicking on the "Add" button
     const li = document.createElement("li");   //create new list item html element  
-    const textElement = document.createTextNode(taskObject.name); // create text html element with user task input name
+    const checkbox = this.createCheckBox(taskObject.status,taskObject.id,li);
+     // create text html element with user task input name
     // if user task input name is empty string, show it at alert dialog, else append the LI element to UL.
-
+   
     li.setAttribute("id", `task${taskObject.id}`);
     li.setAttribute("taskId", `${taskObject.id}`);
+    li.append(checkbox);
+
+    if(taskObject.status ==true){
+      this.CheckedTask(li,true);
+    }
+    const textElement = document.createTextNode(taskObject.name);
 
     this.DisplayDropdown(); //display dropdown
     this.VanishEmptyTaskFloatMassage();
@@ -182,16 +184,17 @@ class UiLogic {
       this.CheckedTask(target, false); // mark task for complete status
     });
     await this.CreateRemoveItemFromList(li, taskList, taskObject.id);
-    // create checkBox
 
+    // create checkBox  
+   
     this.addCalendarIcon(li, taskObject.datetime);
     const pokemonObj = this.getPokemonObjectByName(taskList, taskObject.name);
     if (pokemonObj !== null && index === 0) {
       this.addPokemonImage(pokemonObj);
     }
-    if (taskObject.type == TYPE_FINISHED) {
-      this.CheckedTask(li, true)
-    }
+    // if (taskObject.type == TYPE_FINISHED) {
+    //   this.CheckedTask(li, true)
+    // }
     else if (taskObject.type == TYPE_DEADLINE_FINISHED) {
       li.classList.add('markDeadline');
     }
@@ -278,16 +281,7 @@ class UiLogic {
     floating.style.visibility = "visible";
   }
 
-
-  // removeItem(li, taskList, id) {
-  //   taskList[id - 1] = undefined;
-  //   li.remove();
-
-  // }
-
-
   async CreateRemoveItemFromList(li, taskList, idItem) {
-    console.log(idItem,"idItem");
     const span = document.createElement("SPAN");
     const txt = document.createTextNode("\u00D7");
     span.className = "close";
@@ -445,34 +439,30 @@ class UiLogic {
   }
 
 
-  createCheckBox(liTaskElem,status)
+  createCheckBox(status,id,li)
   {
 
     const checkbox = document.createElement('input');
     checkbox.type = "checkbox";
-    checkbox.value = 1
     checkbox.checked = status;
-    this.addOnClickMehodToCheckBox(checkbox,liTaskElem);
+    checkbox.id= id;
+    this.addOnClickMehodToCheckBox(checkbox,li);
     return checkbox;
   }
 
 
 
-  addOnClickMehodToCheckBox(checkbox,liTaskElem)
+  addOnClickMehodToCheckBox(checkbox,li)
   {
+
     checkbox.addEventListener('change', async(e) => {
-    
-      if (e.target.checked) {
-        await this.itemClient.updateStatus(liTaskElem.id,true)
-        
-      } else {
-        await this.itemClient.updateStatus(liTaskElem.id,false)
-      }
+        const state = e.target.checked;
+        await this.itemClient.updateStatus(e.target.id,state);
+        this.CheckedTask(li,state);
+
     });
   }
 
-
-  
 }
 
 

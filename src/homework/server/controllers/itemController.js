@@ -46,4 +46,16 @@ const ItemManager = require("../services/ItemManager.js")
         next(err);
       }
     }
-    module.exports = {createItem,deleteItem,sortItems,getAllItems,deleteAllItems};
+    
+   async function updateStatus(req, res, next) {
+    try {
+      const id = req.params;
+      const result = await ItemManager.updateStatus(id);
+      
+      if(result) res.status(200).json('item update');
+      else res.status(400).json('Error Occured');
+    } catch (err) {
+      next(err);
+    }
+  }
+    module.exports = {createItem,deleteItem,sortItems,getAllItems,deleteAllItems,updateStatus};

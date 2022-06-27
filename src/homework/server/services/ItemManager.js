@@ -1,5 +1,5 @@
 const pokemonClient = require("../clients/PokemonClient.js");
-const {Item} = require("../db/models")
+const {Item, Sequelize} = require("../db/models")
 const fs = require("fs").promises;
 class ItemManager {
   constructor() {
@@ -12,21 +12,9 @@ class ItemManager {
   async addItem(item) {
     this.newItems = [];
     this.newItemsForTable=[];
-    try{
-      this.taskList = await Item.findAll({raw:true});
-      //let data =  await fs.readFile("todoDB.json")
-      //this.taskList = JSON.parse(data);
-      
-      
-    }
-    catch(err)
-    {
-      await fs.writeFile("todoDB.json",JSON.stringify([]))
-
-    }
+    this.taskList = await Item.findAll({raw:true});
     const pokemonObj = await pokemonClient.checkByPokemonName(item);
     const { isPokemon, arrOfPokemonsID } = this.isPokemon(item);
-
     if (isPokemon || pokemonObj) {
       let ArrWithoutDuplicates;
       let pokemons;
@@ -64,24 +52,12 @@ class ItemManager {
       this.taskList.push({ isPokemon: false, item: item ,isDisplay: false, status: false});
       this.newItems.push({ isPokemon: false, item: item ,isDisplay: false, status: false});
       await Item.bulkCreate(this.newItems);
-      await this.saveFullTaskList();
       return this.newItems;
     }
 
     await Item.bulkCreate(this.newItemsForTable);
-    await this.saveFullTaskList();
-    return this.newItems;
+    return this.newItems[(this.newItems.length)-1];
   }
-
-
-   async saveFullTaskList() {
-    try{
-     await fs.writeFile("./todoDB.json", JSON.stringify(this.taskList))
-    }catch(err){
-    
-    }
-  }
-
 
   getItemsToAdd(arrOfNamesTasks) {
     const pokemonsArr = this.taskList.filter((task) => task.isPokemon == true).map((pokemon) => pokemon.item);
@@ -107,21 +83,7 @@ class ItemManager {
 
   async loadTaskList() {
     this.taskList = await Item.findAll({raw:true});
-    //this.taskList = await this.jsonReader("./todoDB.json")
-
   }
-
-   async addTask(taskName) {
-   this.taskList = await  this.jsonReader("./todoDB.json")
-      // increase customer order count by 1
-      this.taskList.push(taskName);
-      try{
-        await fs.writeFile("./todoDB.json", JSON.stringify(taskArray))
-      }catch(err){
-        await fs.writeFile('./todoDB.json',JSON.stringify([]));
-      }
-
-      }
   
   async getTaskList() {
     this.taskList = await Item.findAll({raw:true}); // with id property 
@@ -129,17 +91,13 @@ class ItemManager {
   }
 
   async sortItems() {
-    //this.taskList = await this.jsonReader("./todoDB.json");
-    // this.taskList = await Item.findAll({raw:true});
-    // this.taskList.reverse();
+     this.taskList = await Item.findAll({raw:true});
+     this.taskList.reverse();
     //await fs.writeFile("./todoDB.json",JSON.stringify(this.taskList));
     return this.taskList;
   }
 
   async DeleteTask(index) {
-  //this.taskList = await Item.findAll({raw:true});
-  // this.taskList = await this.jsonReader("./todoDB.json")
-  
   try {
     await Item.destroy({ where: { id: index+1 } });
     const res = await Item.findAndCountAll();
@@ -151,27 +109,11 @@ class ItemManager {
           restartIdentity: true,
         });
       } 
-    
   } catch (err) {
   throw `There is no task with id: ${index+1} `;
   }
 }
  
-  async jsonReader(filePath) {
-    try{
-      let data =  await fs.readFile(filePath)
-      let tasks = JSON.parse(data);
-      //let tasks = await Item.findAll({raw:true});
-      return tasks;
-    }
-    catch(err)
-    {
-      await fs.writeFile(filePath,JSON.stringify(this.taskList))
-      return this.taskList
-
-    }
-}
-
 async deleteAllItems(){
   this.taskList =[];
   this.newItems = [];
@@ -180,6 +122,14 @@ async deleteAllItems(){
     truncate: true,
     restartIdentity: true,
   });
+}
+async updateStatus(id){
+await Item.update({
+'status': Sequelize.literal('NOT status')},
+{where: {'id' : id.id}},
+
+)
+return true;
 }
 
 }

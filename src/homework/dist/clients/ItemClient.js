@@ -3,6 +3,7 @@ class ItemClient{
     constructor(){
     }
     async createItem(item) {
+      
         // $('body').loadingModal({
         //   text:'Loading...'  
         // });   
@@ -103,7 +104,9 @@ class ItemClient{
          }
     }
 
-    async updateStatus(){
-      
+    async updateStatus(id,status){
+      await fetch(`/item/${id}`,{
+        method: "PATCH"
+      });
     }
 }
