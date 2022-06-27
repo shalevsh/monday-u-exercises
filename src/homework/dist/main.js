@@ -26,8 +26,10 @@ class Main {
  
   async ListenToAddItem(){
       this.addButton.addEventListener("click", async() => {
+        if ( this.inputTaskName.value === '') {
+          alert("You must write something!")
+        }else{
       const items = await this.item_client.createItem(`${this.inputTaskName.value}`);
-      
       if(this.checkObject(items)===true){
         items.forEach(element => {
           this.uiLogic.renderItem([element]);
@@ -36,7 +38,9 @@ class Main {
         this.uiLogic.renderItem([items]);
       }
       this.inputTaskName.value = "";
+    }
     });
+  
 }
 async listenToSortButton(){
   this.sortButton.addEventListener("click",async() => {
@@ -53,10 +57,15 @@ async listenToClearAllTasks(){
 
   AddTaskByEnter() {
     this.inputTaskName.addEventListener("keypress", event => {
+    
       if (event.key === "Enter") {
+        if ( this.inputTaskName.value === '') {
+          alert("You must write something!")
+        }else{
         event.preventDefault();
         this.addButton.click();
         this.inputTaskName.value = "";
+      }
       }
     });
   }

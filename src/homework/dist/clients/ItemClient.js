@@ -102,4 +102,8 @@ class ItemClient{
            throw new Error("failed to sort Items ");
          }
     }
+
+    async updateStatus(){
+      
+    }
 }

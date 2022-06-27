@@ -183,7 +183,7 @@ class UiLogic {
     });
     await this.CreateRemoveItemFromList(li, taskList, taskObject.id);
     // create checkBox
-    
+
     this.addCalendarIcon(li, taskObject.datetime);
     const pokemonObj = this.getPokemonObjectByName(taskList, taskObject.name);
     if (pokemonObj !== null && index === 0) {
@@ -443,6 +443,36 @@ class UiLogic {
 
     }
   }
+
+
+  createCheckBox(liTaskElem,status)
+  {
+
+    const checkbox = document.createElement('input');
+    checkbox.type = "checkbox";
+    checkbox.value = 1
+    checkbox.checked = status;
+    this.addOnClickMehodToCheckBox(checkbox,liTaskElem);
+    return checkbox;
+  }
+
+
+
+  addOnClickMehodToCheckBox(checkbox,liTaskElem)
+  {
+    checkbox.addEventListener('change', async(e) => {
+    
+      if (e.target.checked) {
+        await this.itemClient.updateStatus(liTaskElem.id,true)
+        
+      } else {
+        await this.itemClient.updateStatus(liTaskElem.id,false)
+      }
+    });
+  }
+
+
+  
 }
 
 
