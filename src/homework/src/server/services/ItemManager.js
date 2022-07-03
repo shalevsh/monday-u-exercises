@@ -132,7 +132,7 @@ class ItemManager {
 
 	async getTaskList() {
 		this.taskList = await Item.findAll({ raw: true }); // with id property
-		this.taskList.reverse();
+		this.taskList.reverse(); // with reverse
 		return this.taskList;
 	}
 
