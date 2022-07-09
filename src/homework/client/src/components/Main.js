@@ -39,21 +39,6 @@ function Main() {
 					setTask("");
 
 					addPokemonImage(result.data.pokemon);
-
-					setTimeout(() => {
-						let li = document
-							.querySelector("#my-ul")
-							.querySelector("li");
-						const spinning = [
-							{ transform: "rotate(0deg) scale(0)" },
-							{ transform: "rotate(0) scale(1)" }
-						];
-						const timing = {
-							duration: 500,
-							iterations: 1
-						};
-						li.animate(spinning, timing);
-					}, 100);
 				}
 			});
 	};
