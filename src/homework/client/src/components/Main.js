@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SortDropdown from "./SortDropdown";
 import List from "./List";
+import ListConnector from "./ListConnector";
 import todoService from "../services/todo";
 import bg from "../images/bg.png";
 
@@ -8,7 +9,8 @@ function Main() {
 	const [sort, setSort] = useState(1);
 	const [task, setTask] = useState("");
 	const [list, setList] = useState([]);
-
+	const [showImage, setShowImage] = useState(false);
+	const [image, setImage] = useState("");
 	useEffect(() => {
 		reload();
 	}, []);
@@ -51,35 +53,39 @@ function Main() {
 
 	const addPokemonImage = pokemonObj => {
 		if (!pokemonObj || !pokemonObj.sprites) return;
-		const url = pokemonObj.sprites.front_default;
-		document.getElementById("imageNBA").setAttribute("src", url);
-		document.getElementsByClassName("NbaImage")[0].style.visibility =
-			"visible";
-		const spinning = [
-			{ transform: "rotate(0deg) scale(0)" },
-			{ transform: "rotate(0) scale(1)" }
-		];
-		const timing = {
-			duration: 2000,
-			iterations: 1
-		};
-		document.getElementById("imageNBA").animate(spinning, timing);
-		setTimeout(() => {
-			const spinning = [
-				{ transform: "rotate(0) scale(1)" },
-				{ transform: "rotate(0deg) scale(0)" }
-			];
-			const timing = {
-				duration: 2000,
-				iterations: 1
-			};
-			document.getElementById("imageNBA").animate(spinning, timing);
+		setShowImage(true);
+		setImage(pokemonObj.sprites.front_default);
 			setTimeout(() => {
-				document.getElementsByClassName(
-					"NbaImage"
-				)[0].style.visibility = "hidden";
-			}, 500);
-		}, 2000);
+			setShowImage(false);
+			}, 1500);
+		// document.getElementById("imageNBA").setAttribute("src", url);
+		// document.getElementsByClassName("NbaImage")[0].style.visibility =
+		// 	"visible";
+		// const spinning = [
+		// 	{ transform: "rotate(0deg) scale(0)" },
+		// 	{ transform: "rotate(0) scale(1)" }
+		// ];
+		// const timing = {
+		// 	duration: 2000,
+		// 	iterations: 1
+		// };
+		// document.getElementById("imageNBA").animate(spinning, timing);
+		// setTimeout(() => {
+		// 	const spinning = [
+		// 		{ transform: "rotate(0) scale(1)" },
+		// 		{ transform: "rotate(0deg) scale(0)" }
+		// 	];
+		// 	const timing = {
+		// 		duration: 2000,
+		// 		iterations: 1
+		// 	};
+		// 	document.getElementById("imageNBA").animate(spinning, timing);
+		// 	setTimeout(() => {
+		// 		document.getElementsByClassName(
+		// 			"NbaImage"
+		// 		)[0].style.visibility = "hidden";
+		// 	}, 500);
+		// }, 2000);
 	};
 
 	const handleClearAll = e => {
@@ -127,7 +133,7 @@ function Main() {
 			</div>
 
 			<br />
-			<List data={list} reload={reload} />
+			<ListConnector reload={reload} />
 
 			{list.length > 0 && (
 				<div className="container" style={{ marginBottom: 10 }}>
@@ -145,9 +151,9 @@ function Main() {
 				</div>
 			)}
 
-			<div style={{ visibility: "hidden" }} className="NbaImage">
-				<img id="imageNBA" src={bg} style={{ width: 684 }} />
-			</div>
+			{showImage&&<div className="pokemonImage">
+				<img src={image} style={{ width: 684 }} />
+			</div>}
 			<div className="floating" id="floating_square">
 				<h2
 					style={{

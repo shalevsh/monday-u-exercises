@@ -1,12 +1,12 @@
 import ListItem from "./ListItem";
 import PropTypes from "prop-types";
 
-function List(props) {
+function List({list,reload}) {
 	return (
 		<>
 			<ul id="my-ul">
-				{props.data.map(k => (
-					<ListItem key={k.id} data={k} reload={props.reload} />
+				{list.map(k => (
+					<ListItem key={k.id} data={k} reload={reload} />
 				))}
 			</ul>
 		</>

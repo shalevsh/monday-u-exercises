@@ -122,13 +122,16 @@ ul li.checked::before {
   -moz-box-shadow: 11px 15px 20px -13px rgba(0, 0, 0, 0.93);
 }
 
-.NbaImage {
+.pokemonImage {
   background-color: transparent;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
+  transform: "rotate(0deg) scale(0)";
+	transform: "rotate(0) scale(1)" ;
+  /* duration: 2000,
+  iterations: 1 */
 }
 
 .calendarIcon {
@@ -243,3 +246,14 @@ ul li.checked::before {
 #my-ul input[type="checkbox"] {
   padding: 10px;
 }
+
+
+
+/* // const spinning = [
+		// 	{ transform: "rotate(0deg) scale(0)" },
+		// 	{ transform: "rotate(0) scale(1)" }
+		// ];
+		// const timing = {
+		// 	duration: 2000,
+		// 	iterations: 1
+		// }; */

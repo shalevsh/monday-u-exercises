@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export default class {
+export default class{
+		
 	static create = async obj => {
 		let result = {
 			data: null,
