@@ -1,5 +1,8 @@
 import actionTypes from "./constants";
 import todoService from "../services/todo";
+import {addPokemonImage} from "../components/Main";
+
+
 
 // const updateSearchInput = (searchInput) => ({
 //   type: actionTypes.UPDATE_SEARCH_INPUT,
@@ -11,6 +14,26 @@ import todoService from "../services/todo";
 //     dispatch(updateSearchInput(searchInput));
 //   };
 // };
+
+  const updateDate= (object) => ({
+  type: actionTypes.UPDATE_DATE,
+  itemId: object.itemId,
+ // payload: object.date
+ });
+
+ export const updateDateAction= (object) => {
+  return async (dispatch) => {
+  await todoService.updateDate(object);
+  dispatch(updateDate(object));
+  };
+ };
+
+ export const getSortAction = () => {
+   return async (dispatch) => {
+    const items = await todoService.getSorted();
+     dispatch(addItems(items));
+   };
+ };
 
 const clearAllItems = () => ({
   type: actionTypes.CLEAR_ALL_ITEMS,
@@ -31,7 +54,10 @@ const addItems = (newItems) => ({
 export const addItemsAction = (newItems) => {
   return async (dispatch) => {
     const addedItems = await todoService.create(newItems);
-    dispatch(addItems(addedItems));
+    console.log(addedItems.data.pokemon,"addedItems")
+    //addPokemonImage(addedItems.data.pokemon);
+    dispatch(addItems([addedItems]));
+    
   };
 };
 

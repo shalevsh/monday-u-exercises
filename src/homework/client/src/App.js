@@ -1,12 +1,12 @@
 import "./App.css";
 import Header from "./components/Header";
-import Main from "./components/Main";
+import MainConnector from "./components/MainConnector";
 
 function App() {
 	return (
 		<div className="header">
 			<Header />
-			<Main />
+			<MainConnector />
 		</div>
 	);
 }

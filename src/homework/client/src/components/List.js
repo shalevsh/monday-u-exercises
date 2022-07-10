@@ -1,12 +1,15 @@
 import ListItem from "./ListItem";
 import PropTypes from "prop-types";
+import ListItemConnector from "./ListItemConnector";
 
-function List({list,reload}) {
+function List({list}) {
 	return (
 		<>
 			<ul id="my-ul">
-				{list.map(k => (
-					<ListItem key={k.id} data={k} reload={reload} />
+				{
+				list.map((item,index)=> (
+				//	<ListItem key={item.id} data={item} reload={reload} />
+				<ListItemConnector data={item} key={index} />
 				))}
 			</ul>
 		</>

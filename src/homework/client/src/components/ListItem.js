@@ -3,11 +3,14 @@ import todoService from "../services/todo";
 import moment from "moment";
 import PropTypes from "prop-types";
 
+
 function ListItem({ data, reload }) {
 	const [status, setStatus] = useState(data.status);
 	const [classes, setClasses] = useState("");
+	
 
 	useEffect(() => {
+		console.log(data,"data");
 		setClasses(
 			`${
 				moment(data.updatedAt).diff(moment(), "minute") < 0
@@ -15,6 +18,7 @@ function ListItem({ data, reload }) {
 					: ""
 			} ${status ? "checked" : ""}`
 		);
+
 	}, []);
 
 	const hanldeUpdateDeadline = e => {
@@ -25,7 +29,7 @@ function ListItem({ data, reload }) {
 				date: date
 			})
 			.then(() => {
-				reload();
+				// reload();
 			});
 	};
 	const hanldeUpdateStatus = e => {
@@ -38,7 +42,7 @@ function ListItem({ data, reload }) {
 				status: n
 			})
 			.then(() => {
-				reload();
+				// reload();
 			});
 	};
 	const hanldeUpdateStatusLi = e => {
@@ -50,7 +54,7 @@ function ListItem({ data, reload }) {
 				status: n
 			})
 			.then(() => {
-				reload();
+				// reload();
 			});
 	};
 
@@ -69,6 +73,7 @@ function ListItem({ data, reload }) {
 			setTimeout(() => reload(), 1000);
 		});
 	};
+  
 
 	return (
 		<>
@@ -84,7 +89,7 @@ function ListItem({ data, reload }) {
 						checked={status}
 						onChange={hanldeUpdateStatus}
 					/>
-					{data.item}
+					{data.data.item}
 				</div>
 				<span className="close" onClick={handleDelete}>
 					{"\u00D7"}

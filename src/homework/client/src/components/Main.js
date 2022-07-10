@@ -1,28 +1,24 @@
 import React, { useState, useEffect } from "react";
 import SortDropdown from "./SortDropdown";
-import List from "./List";
 import ListConnector from "./ListConnector";
 import todoService from "../services/todo";
-import bg from "../images/bg.png";
-
-function Main() {
+function Main({addItemsAction,list}) {
 	const [sort, setSort] = useState(1);
 	const [task, setTask] = useState("");
-	const [list, setList] = useState([]);
 	const [showImage, setShowImage] = useState(false);
 	const [image, setImage] = useState("");
 	useEffect(() => {
-		reload();
+		// reload();
 	}, []);
 
-	const reload = () => {
-		setList([]);
-		todoService.getList().then(result => {
-			if (result.data) {
-				setList(result.data);
-			}
-		});
-	};
+	// const reload = () => {
+	// 	setList([]);
+	// 	todoService.getList().then(result => {
+	// 		if (result.data) {
+	// 			setList(result.data);
+	// 		}
+	// 	});
+	// };
 
 	const handleAddTodo = e => {
 		e.preventDefault();
@@ -30,20 +26,19 @@ function Main() {
 			alert(`You must write something!`);
 			return;
 		}
-
+		addItemsAction({item:task});
 		todoService
 			.create({
 				item: task
 			})
 			.then(result => {
 				if (result.data) {
-					reload();
 					setTask("");
-
 					addPokemonImage(result.data.pokemon);
 				}
 			});
-	};
+		}
+		
 
 	const handleKeyPress = e => {
 		if (e.key === "Enter") {
@@ -51,56 +46,30 @@ function Main() {
 		}
 	};
 
-	const addPokemonImage = pokemonObj => {
+	    const addPokemonImage = pokemonObj => {
+			console.log(pokemonObj,"pokemonObj")
 		if (!pokemonObj || !pokemonObj.sprites) return;
 		setShowImage(true);
 		setImage(pokemonObj.sprites.front_default);
 			setTimeout(() => {
 			setShowImage(false);
 			}, 1500);
-		// document.getElementById("imageNBA").setAttribute("src", url);
-		// document.getElementsByClassName("NbaImage")[0].style.visibility =
-		// 	"visible";
-		// const spinning = [
-		// 	{ transform: "rotate(0deg) scale(0)" },
-		// 	{ transform: "rotate(0) scale(1)" }
-		// ];
-		// const timing = {
-		// 	duration: 2000,
-		// 	iterations: 1
-		// };
-		// document.getElementById("imageNBA").animate(spinning, timing);
-		// setTimeout(() => {
-		// 	const spinning = [
-		// 		{ transform: "rotate(0) scale(1)" },
-		// 		{ transform: "rotate(0deg) scale(0)" }
-		// 	];
-		// 	const timing = {
-		// 		duration: 2000,
-		// 		iterations: 1
-		// 	};
-		// 	document.getElementById("imageNBA").animate(spinning, timing);
-		// 	setTimeout(() => {
-		// 		document.getElementsByClassName(
-		// 			"NbaImage"
-		// 		)[0].style.visibility = "hidden";
-		// 	}, 500);
-		// }, 2000);
+		
 	};
 
 	const handleClearAll = e => {
 		e.preventDefault();
 		todoService.removeAll().then(() => {
-			reload();
+			// reload();
 		});
 	};
 
 	const handleSort = e => {
 		e.preventDefault();
-		setList([]);
+		//setList([]);
 		todoService.getSorted(sort).then(result => {
 			if (result.data) {
-				setList(result.data);
+				//setList(result.data);
 			}
 		});
 	};
@@ -133,7 +102,7 @@ function Main() {
 			</div>
 
 			<br />
-			<ListConnector reload={reload} />
+			<ListConnector />
 
 			{list.length > 0 && (
 				<div className="container" style={{ marginBottom: 10 }}>
