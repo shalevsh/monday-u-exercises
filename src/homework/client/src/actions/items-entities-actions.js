@@ -40,6 +40,7 @@ const clearAllItems = () => ({
 });
 
 export const clearAllItemsAction = () => {
+  
   return async (dispatch) => {
     await todoService.removeAll()
     dispatch(clearAllItems());
@@ -52,21 +53,26 @@ const addItems = (newItems) => ({
 });
 
 export const addItemsAction = (newItems) => {
+  
   return async (dispatch) => {
     const addedItems = await todoService.create(newItems);
-    console.log(addedItems.data.pokemon,"addedItems")
-    //addPokemonImage(addedItems.data.pokemon);
-    dispatch(addItems([addedItems]));
-    
+    if(addedItems.error){
+      console.log(addedItems.error);
+    }else{
+      addedItems.data =[addedItems.data];
+      dispatch(addItems(addedItems));
+    } 
   };
 };
 
 const itemToDelete = (itemId) => ({
+
   type: actionTypes.DELETE_ITEM,
   payload: itemId,
 });
 
 export const deleteItemAction = (itemId) => {
+
   return async (dispatch) => {
     await todoService.remove(itemId);
     dispatch(itemToDelete(itemId));
@@ -88,7 +94,9 @@ export const updateCheckBoxAction = (object) => {
 
 export const getItemsAction = () => {
   return async (dispatch) => {
-    const items = await todoService.getList();
-    dispatch(addItems(items));
+    const itemsArray = await todoService.getList();
+    if(itemsArray.data.length>0){
+    dispatch(addItems(itemsArray));
+    }
   };
 };

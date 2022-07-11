@@ -2,14 +2,20 @@ import React, { useState, useEffect } from "react";
 import SortDropdown from "./SortDropdown";
 import ListConnector from "./ListConnector";
 import todoService from "../services/todo";
-function Main({addItemsAction,list}) {
+function Main({addItemsAction,list,clearAllItemsAction,getItemsAction}) {
 	const [sort, setSort] = useState(1);
 	const [task, setTask] = useState("");
 	const [showImage, setShowImage] = useState(false);
 	const [image, setImage] = useState("");
 	useEffect(() => {
-		// reload();
-	}, []);
+		getItemsAction();
+	},[]);
+	useEffect(() => {
+		if(list.length> 0 && list[list.length-1].isPokemon){
+		const pokemonObj= list[list.length-1].pokemon;
+		addPokemonImage(pokemonObj);
+		}
+	},[list]);
 
 	// const reload = () => {
 	// 	setList([]);
@@ -27,16 +33,9 @@ function Main({addItemsAction,list}) {
 			return;
 		}
 		addItemsAction({item:task});
-		todoService
-			.create({
-				item: task
-			})
-			.then(result => {
-				if (result.data) {
-					setTask("");
-					addPokemonImage(result.data.pokemon);
-				}
-			});
+		// addPokemonImage(result.data.pokemon);
+
+		
 		}
 		
 
@@ -57,11 +56,9 @@ function Main({addItemsAction,list}) {
 		
 	};
 
-	const handleClearAll = e => {
+	 const handleClearAll = async(e) => {
 		e.preventDefault();
-		todoService.removeAll().then(() => {
-			// reload();
-		});
+		await clearAllItemsAction();
 	};
 
 	const handleSort = e => {

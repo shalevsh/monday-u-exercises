@@ -12,7 +12,8 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       item: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique:true
       },
       isDisplay: {
         type: Sequelize.BOOLEAN

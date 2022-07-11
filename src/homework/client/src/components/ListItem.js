@@ -4,13 +4,12 @@ import moment from "moment";
 import PropTypes from "prop-types";
 
 
-function ListItem({ data, reload }) {
+function ListItem({ data,deleteItemAction}) {
 	const [status, setStatus] = useState(data.status);
 	const [classes, setClasses] = useState("");
 	
 
 	useEffect(() => {
-		console.log(data,"data");
 		setClasses(
 			`${
 				moment(data.updatedAt).diff(moment(), "minute") < 0
@@ -60,18 +59,19 @@ function ListItem({ data, reload }) {
 
 	const handleDelete = e => {
 		e.preventDefault();
-		todoService.remove(data.id).then(() => {
-			const spinning = [
-				{ transform: "rotate(0) scale(1)" },
-				{ transform: "rotate(0deg) scale(0)" }
-			];
-			const timing = {
-				duration: 1000,
-				iterations: 1
-			};
-			e.target.parentNode.animate(spinning, timing);
-			setTimeout(() => reload(), 1000);
-		});
+		deleteItemAction(data.data.id);
+		// todoService.remove(data.id).then(() => {
+		// 	const spinning = [
+		// 		{ transform: "rotate(0) scale(1)" },
+		// 		{ transform: "rotate(0deg) scale(0)" }
+		// 	];
+		// 	const timing = {
+		// 		duration: 1000,
+		// 		iterations: 1
+		// 	};
+		// 	e.target.parentNode.animate(spinning, timing);
+		// 	setTimeout(() => reload(), 1000);
+		// });
 	};
   
 
@@ -89,7 +89,7 @@ function ListItem({ data, reload }) {
 						checked={status}
 						onChange={hanldeUpdateStatus}
 					/>
-					{data.data.item}
+					 {data.item}
 				</div>
 				<span className="close" onClick={handleDelete}>
 					{"\u00D7"}

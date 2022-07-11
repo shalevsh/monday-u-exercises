@@ -40,9 +40,8 @@ async function getAllItems(req, res, next) {
 
 async function deleteAllItems(req, res, next) {
 	try {
-		const result = await ItemManager.deleteAllItems();
-		if (result) res.status(200).json("all items deleted");
-		else res.status(400).json("Error Occured");
+		await ItemManager.deleteAllItems();
+		res.status(200).json("all items deleted");
 	} catch (err) {
 		next(err);
 	}

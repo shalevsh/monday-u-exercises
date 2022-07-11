@@ -3,6 +3,7 @@ import axios from "axios";
 export default class{
 		
 	static create = async obj => {
+		
 		let result = {
 			data: null,
 			error: null
@@ -18,8 +19,11 @@ export default class{
 			.catch(err => {
 				result.error = err.response.data;
 			});
-
+		if(Array.isArray(result.data)){
+		result.data=result.data[0];	
+		}
 		return result;
+	
 	};
 
 	static updateStatus = async obj => {
@@ -158,7 +162,7 @@ export default class{
 			.catch(err => {
 				result.error = err.response.data;
 			});
-
+		
 		return result;
 	};
 
@@ -167,9 +171,8 @@ export default class{
 			data: null,
 			error: null
 		};
-
 		await axios
-			.delete(`${process.env.REACT_APP_API_URL}/item/`)
+			.delete(`${process.env.REACT_APP_API_URL}/item`)
 			.then(resp => {
 				if (resp.status === 200 || resp.status === 201) {
 					result.data = resp.data;
@@ -180,5 +183,7 @@ export default class{
 			});
 
 		return result;
+		
+
 	};
 }

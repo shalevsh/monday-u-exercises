@@ -9,20 +9,20 @@ const itemsEntitiesReducer = (state = initialState, action) => {
     return{...state,List: action.payload};
 
     case actionTypes.ADD_ITEMS:
-    return{...state,List:[...state.List,...action.payload]};
+    return{...state,List:[...state.List,...action.payload.data]};
 
     case actionTypes.DELETE_ITEM:
       return {
         ...state,
-        items: [
-          ...state.items.filter((item) => item.itemId !== action.payload),
+        List: [
+          ...state.List.filter((item) => item.data.id !== action.payload),
         ],
       };
 
       case actionTypes.UPDATE_CHECKBOX:
       return {
         ...state,
-        items: state.items.map((item) =>
+        List: state.items.map((item) =>
           item.itemId === action.itemId
             ? { ...item, status: action.payload }
             : item
@@ -32,7 +32,7 @@ const itemsEntitiesReducer = (state = initialState, action) => {
       case actionTypes.CLEAR_ALL_ITEMS:
         return {
           ...state,
-          items: [],
+          List: [],
         };
 
         case actionTypes.UPDATE_SEARCH_INPUT:

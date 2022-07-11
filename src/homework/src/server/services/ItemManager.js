@@ -7,7 +7,12 @@ class ItemManager {
 		this.newItems = [];
 		this.newItemsForTable = [];
 	}
+	async addTask(item){
 
+	}
+	async addPokemon(item){
+
+	}
 	async addItem(item) {
 		this.newItems = [];
 		this.newItemsForTable = [];
@@ -18,7 +23,6 @@ class ItemManager {
 			let ArrWithoutDuplicates;
 			let pokemons;
 			try {
-				//  ArrWithoutDuplicates = this.getItemsToAdd(arrOfPokemonsID);
 				if (pokemonObj) {
 					pokemons = [pokemonObj];
 					const pokemonObjForTable = {
@@ -57,6 +61,7 @@ class ItemManager {
 							status: false,
 							pokemon: pokemon
 						};
+						
 						this.newItems.push(pokemonObj);
 					});
 				}
@@ -91,6 +96,7 @@ class ItemManager {
 				isDisplay: false,
 				status: false
 			});
+			console.log(this.newItems,"this.newItems");
 			await Item.bulkCreate(this.newItems);
 			return this.newItems;
 		}
