@@ -33,7 +33,7 @@ export default class{
 		};
 
 		await axios
-			.patch(`${process.env.REACT_APP_API_URL}/item/${obj.id}`, obj)
+			.patch(`${process.env.REACT_APP_API_URL}/item/${obj.id}`)
 			.then(resp => {
 				if (resp.status === 200 || resp.status === 201) {
 					result.data = resp.data;

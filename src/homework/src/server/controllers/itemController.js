@@ -50,9 +50,7 @@ async function deleteAllItems(req, res, next) {
 async function updateStatus(req, res, next) {
 	try {
 		const id = req.params.id;
-		const status = req.body.status;
-		const result = await ItemManager.updateStatus(id, status);
-
+		const result = await ItemManager.updateStatus(id);
 		if (result) res.status(200).json("item update");
 		else res.status(400).json("Error Occured");
 	} catch (err) {

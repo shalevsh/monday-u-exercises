@@ -5,26 +5,21 @@ import todoService from "../services/todo";
 function Main({addItemsAction,list,clearAllItemsAction,getItemsAction}) {
 	const [sort, setSort] = useState(1);
 	const [task, setTask] = useState("");
+	const [search, setSearch] = useState("");
 	const [showImage, setShowImage] = useState(false);
 	const [image, setImage] = useState("");
+	
 	useEffect(() => {
 		getItemsAction();
 	},[]);
 	useEffect(() => {
 		if(list.length> 0 && list[list.length-1].isPokemon){
 		const pokemonObj= list[list.length-1].pokemon;
+		if(!showImage){
 		addPokemonImage(pokemonObj);
 		}
+		}
 	},[list]);
-
-	// const reload = () => {
-	// 	setList([]);
-	// 	todoService.getList().then(result => {
-	// 		if (result.data) {
-	// 			setList(result.data);
-	// 		}
-	// 	});
-	// };
 
 	const handleAddTodo = e => {
 		e.preventDefault();
@@ -32,13 +27,10 @@ function Main({addItemsAction,list,clearAllItemsAction,getItemsAction}) {
 			alert(`You must write something!`);
 			return;
 		}
-		addItemsAction({item:task});
-		// addPokemonImage(result.data.pokemon);
-
 		
+		addItemsAction({item:task});		
 		}
-		
-
+	
 	const handleKeyPress = e => {
 		if (e.key === "Enter") {
 			handleAddTodo(e);
@@ -46,14 +38,12 @@ function Main({addItemsAction,list,clearAllItemsAction,getItemsAction}) {
 	};
 
 	    const addPokemonImage = pokemonObj => {
-			console.log(pokemonObj,"pokemonObj")
 		if (!pokemonObj || !pokemonObj.sprites) return;
 		setShowImage(true);
 		setImage(pokemonObj.sprites.front_default);
 			setTimeout(() => {
 			setShowImage(false);
 			}, 1500);
-		
 	};
 
 	 const handleClearAll = async(e) => {
@@ -93,14 +83,29 @@ function Main({addItemsAction,list,clearAllItemsAction,getItemsAction}) {
 					onChange={e => setTask(e.target.value)}
 					onKeyPress={handleKeyPress}
 				/>
+				
 				<button className="btn" id="add-btn" onClick={handleAddTodo}>
+					+
+				</button>
+			
+			</div>
+
+			<div>
+			<input
+					type= "text"
+					id="input-search-task"
+					placeholder="Search..."
+					style={{ marginLeft: 70 }}
+					value={search}
+					onChange={e => setSearch(e.target.value)}
+				/>
+				<button className="btn" id="search-btn" onClick={handleAddTodo}>
 					+
 				</button>
 			</div>
 
 			<br />
-			<ListConnector />
-
+			<ListConnector search={search}/>
 			{list.length > 0 && (
 				<div className="container" style={{ marginBottom: 10 }}>
 					you have <span>{list.length}</span> tasks

@@ -1,5 +1,5 @@
 const pokemonClient = require("../clients/PokemonClient.js");
-const { Item, Sequelize } = require("../db/models");
+const { Item, Sequelize, sequelize } = require("../db/models");
 const fs = require("fs").promises;
 class ItemManager {
 	constructor() {
@@ -19,6 +19,7 @@ class ItemManager {
 		this.taskList = await Item.findAll({ raw: true });
 		const pokemonObj = await pokemonClient.checkByPokemonName(item);
 		const { isPokemon, arrOfPokemonsID } = this.isPokemon(item);
+		
 		if (isPokemon || pokemonObj) {
 			let ArrWithoutDuplicates;
 			let pokemons;
@@ -96,12 +97,20 @@ class ItemManager {
 				isDisplay: false,
 				status: false
 			});
-			console.log(this.newItems,"this.newItems");
 			await Item.bulkCreate(this.newItems);
+			const taskName =this.newItems[0].item
+			const lineTable = await Item.findOne
+				({ where: { item: taskName } });
+			this.newItems[0].id = lineTable.id;
 			return this.newItems;
 		}
 
 		await Item.bulkCreate(this.newItemsForTable);
+		const taskName =this.newItems[0].item
+		const lineTable = await Item.findOne
+			({ where: { item: taskName } });
+		this.newItems[0].id = lineTable.id;
+		
 		let t = this.newItems[this.newItems.length - 1];
 		return t;
 	}
@@ -198,10 +207,10 @@ class ItemManager {
 		});
 	}
 
-	async updateStatus(id, status) {
+	async updateStatus(id) {
 		await Item.update(
 			{
-				status: status
+				status: Sequelize.literal("NOT status")
 			},
 			{ where: { id: id } }
 		);

@@ -2,15 +2,15 @@ import ListItem from "./ListItem";
 import PropTypes from "prop-types";
 import ListItemConnector from "./ListItemConnector";
 
-function List({list}) {
+function List({list,search}) {
 	return (
 		<>
 			<ul id="my-ul">
-				{
-				list.map((item,index)=> (
-				//	<ListItem key={item.id} data={item} reload={reload} />
-				<ListItemConnector data={item} key={index} />
-				))}
+				{list.map((item,index)=>{
+				if(item.item.includes(search)){
+					return <ListItemConnector data={item} key={index} />
+				}
+			})}
 			</ul>
 		</>
 	);

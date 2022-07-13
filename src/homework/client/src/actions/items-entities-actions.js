@@ -53,7 +53,6 @@ const addItems = (newItems) => ({
 });
 
 export const addItemsAction = (newItems) => {
-  
   return async (dispatch) => {
     const addedItems = await todoService.create(newItems);
     if(addedItems.error){

@@ -14,16 +14,14 @@ const itemsEntitiesReducer = (state = initialState, action) => {
     case actionTypes.DELETE_ITEM:
       return {
         ...state,
-        List: [
-          ...state.List.filter((item) => item.data.id !== action.payload),
-        ],
+        List: state.List.filter((item) => item.id !== action.payload),
       };
 
       case actionTypes.UPDATE_CHECKBOX:
       return {
         ...state,
-        List: state.items.map((item) =>
-          item.itemId === action.itemId
+        List: state.List.map((item) =>
+          item.id === action.itemId
             ? { ...item, status: action.payload }
             : item
         ),
