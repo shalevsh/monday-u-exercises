@@ -1,13 +1,16 @@
 import ListItem from "./ListItem";
 import PropTypes from "prop-types";
+import ListItemConnector from "./ListItemConnector";
 
-function List(props) {
+function List({list,search}) {
 	return (
 		<>
 			<ul id="my-ul">
-				{props.data.map(k => (
-					<ListItem key={k.id} data={k} reload={props.reload} />
-				))}
+				{list.map((item,index)=>{
+				if(item.item.includes(search)){
+					return <ListItemConnector data={item} key={index} />
+				}
+			})}
 			</ul>
 		</>
 	);

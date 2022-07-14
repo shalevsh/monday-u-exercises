@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import todoService from "../services/todo";
 import moment from "moment";
 import PropTypes from "prop-types";
 
-function ListItem({ data, reload }) {
+
+function ListItem({ data,deleteItemAction,updateCheckBoxAction}) {
 	const [status, setStatus] = useState(data.status);
 	const [classes, setClasses] = useState("");
+	
 
 	useEffect(() => {
 		setClasses(
-			`${
-				moment(data.updatedAt).diff(moment(), "minute") < 0
-					? "markDeadline"
-					: ""
-			} ${status ? "checked" : ""}`
+			`${moment(data.updatedAt).diff(moment(), "minute") < 0 ? "markDeadline":""}
+			 ${status ? "checked" : ""}`
 		);
-	}, []);
+
+	}, [classes]);
 
 	const hanldeUpdateDeadline = e => {
 		let date = e.target.value;
@@ -25,50 +25,30 @@ function ListItem({ data, reload }) {
 				date: date
 			})
 			.then(() => {
-				reload();
+				// reload();
 			});
 	};
+	const hanldeUpdateClick = useCallback(()=>{
+		updateCheckBoxAction(data);
+	},[updateCheckBoxAction]);
+
+
 	const hanldeUpdateStatus = e => {
 		e.preventDefault();
-		let n = e.target.checked;
-		setStatus(n);
-		todoService
-			.updateStatus({
-				id: data.id,
-				status: n
-			})
-			.then(() => {
-				reload();
-			});
+		if(!status){
+		setClasses("checked");
+		}else{
+		setClasses("");
+		}
+		setStatus(!status);
 	};
-	const hanldeUpdateStatusLi = e => {
-		let n = !status;
-		setStatus(n);
-		todoService
-			.updateStatus({
-				id: data.id,
-				status: n
-			})
-			.then(() => {
-				reload();
-			});
-	};
-
+	
 	const handleDelete = e => {
 		e.preventDefault();
-		todoService.remove(data.id).then(() => {
-			const spinning = [
-				{ transform: "rotate(0) scale(1)" },
-				{ transform: "rotate(0deg) scale(0)" }
-			];
-			const timing = {
-				duration: 1000,
-				iterations: 1
-			};
-			e.target.parentNode.animate(spinning, timing);
-			setTimeout(() => reload(), 1000);
-		});
+		deleteItemAction(data.id);
+		
 	};
+  
 
 	return (
 		<>
@@ -78,13 +58,14 @@ function ListItem({ data, reload }) {
 					className="calendarIcon"
 					onChange={hanldeUpdateDeadline}
 				/>
-				<div onClick={hanldeUpdateStatusLi}>
+				<div>
 					<input
 						type="checkbox"
+						onClick={hanldeUpdateClick}
 						checked={status}
 						onChange={hanldeUpdateStatus}
 					/>
-					{data.item}
+					 {data.item}
 				</div>
 				<span className="close" onClick={handleDelete}>
 					{"\u00D7"}

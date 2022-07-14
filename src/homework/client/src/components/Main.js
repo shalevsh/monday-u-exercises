@@ -1,26 +1,25 @@
 import React, { useState, useEffect } from "react";
 import SortDropdown from "./SortDropdown";
-import List from "./List";
+import ListConnector from "./ListConnector";
 import todoService from "../services/todo";
-import bg from "../images/bg.png";
-
-function Main() {
+function Main({addItemsAction,list,clearAllItemsAction,getItemsAction}) {
 	const [sort, setSort] = useState(1);
 	const [task, setTask] = useState("");
-	const [list, setList] = useState([]);
-
+	const [search, setSearch] = useState("");
+	const [showImage, setShowImage] = useState(false);
+	const [image, setImage] = useState("");
+	
 	useEffect(() => {
-		reload();
-	}, []);
-
-	const reload = () => {
-		setList([]);
-		todoService.getList().then(result => {
-			if (result.data) {
-				setList(result.data);
-			}
-		});
-	};
+		getItemsAction();
+	},[]);
+	useEffect(() => {
+		if(list.length> 0 && list[list.length-1].isPokemon){
+		const pokemonObj= list[list.length-1].pokemon;
+		if(!showImage){
+		addPokemonImage(pokemonObj);
+		}
+		}
+	},[list]);
 
 	const handleAddTodo = e => {
 		e.preventDefault();
@@ -28,88 +27,36 @@ function Main() {
 			alert(`You must write something!`);
 			return;
 		}
-
-		todoService
-			.create({
-				item: task
-			})
-			.then(result => {
-				if (result.data) {
-					reload();
-					setTask("");
-
-					addPokemonImage(result.data.pokemon);
-
-					setTimeout(() => {
-						let li = document
-							.querySelector("#my-ul")
-							.querySelector("li");
-						const spinning = [
-							{ transform: "rotate(0deg) scale(0)" },
-							{ transform: "rotate(0) scale(1)" }
-						];
-						const timing = {
-							duration: 500,
-							iterations: 1
-						};
-						li.animate(spinning, timing);
-					}, 100);
-				}
-			});
-	};
-
+		
+		addItemsAction({item:task});		
+		}
+	
 	const handleKeyPress = e => {
 		if (e.key === "Enter") {
 			handleAddTodo(e);
 		}
 	};
 
-	const addPokemonImage = pokemonObj => {
+	    const addPokemonImage = pokemonObj => {
 		if (!pokemonObj || !pokemonObj.sprites) return;
-		const url = pokemonObj.sprites.front_default;
-		document.getElementById("imageNBA").setAttribute("src", url);
-		document.getElementsByClassName("NbaImage")[0].style.visibility =
-			"visible";
-		const spinning = [
-			{ transform: "rotate(0deg) scale(0)" },
-			{ transform: "rotate(0) scale(1)" }
-		];
-		const timing = {
-			duration: 2000,
-			iterations: 1
-		};
-		document.getElementById("imageNBA").animate(spinning, timing);
-		setTimeout(() => {
-			const spinning = [
-				{ transform: "rotate(0) scale(1)" },
-				{ transform: "rotate(0deg) scale(0)" }
-			];
-			const timing = {
-				duration: 2000,
-				iterations: 1
-			};
-			document.getElementById("imageNBA").animate(spinning, timing);
+		setShowImage(true);
+		setImage(pokemonObj.sprites.front_default);
 			setTimeout(() => {
-				document.getElementsByClassName(
-					"NbaImage"
-				)[0].style.visibility = "hidden";
-			}, 500);
-		}, 2000);
+			setShowImage(false);
+			}, 1500);
 	};
 
-	const handleClearAll = e => {
+	 const handleClearAll = async(e) => {
 		e.preventDefault();
-		todoService.removeAll().then(() => {
-			reload();
-		});
+		await clearAllItemsAction();
 	};
 
 	const handleSort = e => {
 		e.preventDefault();
-		setList([]);
+		//setList([]);
 		todoService.getSorted(sort).then(result => {
 			if (result.data) {
-				setList(result.data);
+				//setList(result.data);
 			}
 		});
 	};
@@ -136,14 +83,29 @@ function Main() {
 					onChange={e => setTask(e.target.value)}
 					onKeyPress={handleKeyPress}
 				/>
+				
 				<button className="btn" id="add-btn" onClick={handleAddTodo}>
+					+
+				</button>
+			
+			</div>
+
+			<div>
+			<input
+					type= "text"
+					id="input-search-task"
+					placeholder="Search..."
+					style={{ marginLeft: 70 }}
+					value={search}
+					onChange={e => setSearch(e.target.value)}
+				/>
+				<button className="btn" id="search-btn" onClick={handleAddTodo}>
 					+
 				</button>
 			</div>
 
 			<br />
-			<List data={list} reload={reload} />
-
+			<ListConnector search={search}/>
 			{list.length > 0 && (
 				<div className="container" style={{ marginBottom: 10 }}>
 					you have <span>{list.length}</span> tasks
@@ -160,9 +122,9 @@ function Main() {
 				</div>
 			)}
 
-			<div style={{ visibility: "hidden" }} className="NbaImage">
-				<img id="imageNBA" src={bg} style={{ width: 684 }} />
-			</div>
+			{showImage&&<div className="pokemonImage">
+				<img src={image} style={{ width: 684 }} />
+			</div>}
 			<div className="floating" id="floating_square">
 				<h2
 					style={{
