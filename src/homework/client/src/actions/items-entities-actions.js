@@ -4,17 +4,6 @@ import {addPokemonImage} from "../components/Main";
 
 
 
-// const updateSearchInput = (searchInput) => ({
-//   type: actionTypes.UPDATE_SEARCH_INPUT,
-//   payload: searchInput,
-// });
-
-// export const updateSearchInputAction = (searchInput) => {
-//   return async (dispatch) => {
-//     dispatch(updateSearchInput(searchInput));
-//   };
-// };
-
   const updateDate= (object) => ({
   type: actionTypes.UPDATE_DATE,
   itemId: object.itemId,
@@ -47,7 +36,7 @@ export const clearAllItemsAction = () => {
   };
 };
 
-const addItems = (newItems) => ({
+ export const addItems = (newItems) => ({
   type: actionTypes.ADD_ITEMS,
   payload: newItems,
 });
@@ -59,6 +48,8 @@ export const addItemsAction = (newItems) => {
       console.log(addedItems.error);
     }else{
       addedItems.data =[addedItems.data];
+      console.log(addedItems,"addedItems");
+
       dispatch(addItems(addedItems));
     } 
   };
