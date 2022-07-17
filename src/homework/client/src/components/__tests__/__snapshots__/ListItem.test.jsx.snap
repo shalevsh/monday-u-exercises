@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly pending todo 1`] = `
+<li
+  className=""
+>
+  <input
+    className="calendarIcon"
+    onChange={[Function]}
+    type="datetime-local"
+  />
+  <div>
+    <input
+      checked={false}
+      onChange={[Function]}
+      onClick={[Function]}
+      type="checkbox"
+    />
+    four
+  </div>
+  <span
+    className="close"
+    onClick={[Function]}
+  >
+    ×
+  </span>
+</li>
+`;

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 
 
 function ListItem({ data,deleteItemAction,updateCheckBoxAction}) {
+	console.log(data,"data lantsman")
 	const [status, setStatus] = useState(data.status);
 	const [classes, setClasses] = useState("");
 	
