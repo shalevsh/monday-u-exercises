@@ -53,7 +53,7 @@ function ListItem({ data,deleteItemAction,updateCheckBoxAction}) {
 
 	return (
 		<>
-			<li className={classes}>
+			<li className={classes} data-testid= {`item-${data.id}`}>
 				<input
 					type="datetime-local"
 					className="calendarIcon"

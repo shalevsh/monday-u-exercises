@@ -90,3 +90,7 @@ export const getItemsAction = () => {
     }
   };
 };
+
+export const itemsEntitiesActions = {
+  getItemsAction
+}

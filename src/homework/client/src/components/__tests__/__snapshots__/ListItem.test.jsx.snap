@@ -3,6 +3,7 @@
 exports[`renders correctly pending todo 1`] = `
 <li
   className=""
+  id="item-1"
 >
   <input
     className="calendarIcon"
