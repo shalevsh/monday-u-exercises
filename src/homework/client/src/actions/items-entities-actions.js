@@ -4,17 +4,6 @@ import {addPokemonImage} from "../components/Main";
 
 
 
-// const updateSearchInput = (searchInput) => ({
-//   type: actionTypes.UPDATE_SEARCH_INPUT,
-//   payload: searchInput,
-// });
-
-// export const updateSearchInputAction = (searchInput) => {
-//   return async (dispatch) => {
-//     dispatch(updateSearchInput(searchInput));
-//   };
-// };
-
   const updateDate= (object) => ({
   type: actionTypes.UPDATE_DATE,
   itemId: object.itemId,
@@ -47,7 +36,7 @@ export const clearAllItemsAction = () => {
   };
 };
 
-const addItems = (newItems) => ({
+ export const addItems = (newItems) => ({
   type: actionTypes.ADD_ITEMS,
   payload: newItems,
 });
@@ -56,9 +45,9 @@ export const addItemsAction = (newItems) => {
   return async (dispatch) => {
     const addedItems = await todoService.create(newItems);
     if(addedItems.error){
-      console.log(addedItems.error);
     }else{
       addedItems.data =[addedItems.data];
+
       dispatch(addItems(addedItems));
     } 
   };
@@ -99,3 +88,7 @@ export const getItemsAction = () => {
     }
   };
 };
+
+export const itemsEntitiesActions = {
+  getItemsAction
+}
