@@ -22,7 +22,6 @@ export default class{
 		if(Array.isArray(result.data)){
 		result.data=result.data[0];	
 		}
-		console.log(result,"result")
 		return result;
 	
 	};

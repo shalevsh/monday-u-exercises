@@ -45,10 +45,8 @@ export const addItemsAction = (newItems) => {
   return async (dispatch) => {
     const addedItems = await todoService.create(newItems);
     if(addedItems.error){
-      console.log(addedItems.error);
     }else{
       addedItems.data =[addedItems.data];
-      console.log(addedItems,"addedItems");
 
       dispatch(addItems(addedItems));
     } 

@@ -8,7 +8,6 @@ function List({list,search}) {
 			<ul id="my-ul">
 				{list.map((item,index)=>{
 				if(item.item.includes(search)){
-					console.log(item,"item");
 					return <ListItemConnector data={item} key={index} />
 				}
 			})}
